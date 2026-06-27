@@ -1,4 +1,5 @@
 import random 
+import time 
 # Setting up my fighters using variables
 fighter_namae = "Gojo Satoru"
 fighter_hp = 100
@@ -15,7 +16,8 @@ while fighter_hp > 0 and fighter2_hp > 0:
     attack_dmage = random.randint(15,30)
     fighter2_hp = fighter2_hp - attack_dmage 
     print(f"{fighter_namae} uses Hollow Purple and deals {attack_dmage} damage!! Sukuna HP: {fighter2_hp}")
-
+    time.sleep(1.5) # this pauses for 1.5 seconds to build suspense!
+    
     if attack_dmage > 20:
         black_flash = random.randint(1,10)
         fighter2_hp = fighter2_hp - black_flash
