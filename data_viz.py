@@ -26,4 +26,19 @@ plt.grid(True) #Adds a clean backdroud grid
 
 # 5. Display the graph window onto your screen 
 print("\nLunching interactive graph interface . . .")
+
+# 6. Traning Time Distribution Dataset 
+routine_data = {
+    "Activity" : ["Strength Training", "cardio", "Flexibility", "Reset/Recovery" ],
+    "Hours" : [5, 3, 2, 2]
+}
+
+# Convert to new DataFrame
+df_routine = pd.DataFrame(routine_data)
+
+# Creating a clean Pie Chart 
+plt.figure() # opens a fresh blank canvas for the new graph
+plt.pie(df_routine["Hours"], labels=df_routine["Activity"], autopct='%1.1f%%', colors={'crimson', 'royalblue', 'gold', 'seagreen'})
+plt.title("Weekly Training Time Distribution")
+plt.savefig("training_time_distribution.png", dpi=300) #Saves the graph as a PNG file in the current working directory 
 plt.show() # this command will open a new window with the graph and allow you to interact with it
