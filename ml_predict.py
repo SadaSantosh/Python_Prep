@@ -1,39 +1,78 @@
 import pandas as pd
+import pickle
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score
 
-# 1. Load the expanded dataset
-df = pd.read_csv("student_data.csv")
+# File paths for saving our trained models
+LR_MODEL_PATH = "logistic_regression_model.pkl"
+TREE_MODEL_PATH = "decision_tree_model.pkl"
 
-# Fill missing values if any
-df["Hours_Studied"] = df["Hours_Studied"].fillna(df["Hours_Studied"].mean())
+# Check if the models are already trained and saved
+if not os.path.exists(LR_MODEL_PATH) or not os.path.exists(TREE_MODEL_PATH):
+    print("🤖 First-time setup: Training models and saving them to disk...")
+    df = pd.read_csv("student_data.csv")
+    df["Hours_Studied"] = df["Hours_Studied"].fillna(df["Hours_Studied"].mean())
 
-# 2. Train with all THREE features now!
-x = df[["Hours_Studied", "Sleep_Hours", "Attendance"]]
-y = df["Passed"]
+    x = df[["Hours_Studied", "Sleep_Hours", "Attendance"]]
+    y = df["Passed"]
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-# Initialize and train models
-lr_model = LogisticRegression()
-lr_model.fit(x_train, y_train)
+    # Train
+    lr_model = LogisticRegression()
+    lr_model.fit(x_train, y_train)
 
-tree_model = DecisionTreeClassifier(max_depth=3)
-tree_model.fit(x_train, y_train)
+    tree_model = DecisionTreeClassifier(max_depth=3)
+    tree_model.fit(x_train, y_train)
 
-# Print the real accuracies with the new feature
-print(f"Logistic Regression Accuracy: {accuracy_score(y_test, lr_model.predict(x_test))}")
-print(f"Decision Tree Accuracy: {accuracy_score(y_test, tree_model.predict(x_test))}")
+    # Save models using pickle
+    with open(LR_MODEL_PATH, "wb") as f:
+        pickle.dump(lr_model, f)
+    with open(TREE_MODEL_PATH, "wb") as f:
+        pickle.dump(tree_model, f)
+    print("💾 Models successfully saved as .pkl files!\n")
+else:
+    print("⚡ Fast load: Loading pre-trained models from disk...")
+    # Load models using pickle
+    with open(LR_MODEL_PATH, "rb") as f:
+        lr_model = pickle.load(f)
+    with open(TREE_MODEL_PATH, "rb") as f:
+        tree_model = pickle.load(f)
 
-print("\n--- Making a Custom Prediction ---")
-# 3. Predict for a custom student scenario
-# Let's test: 4.5 Hours Studied, 7 Hours Sleep, 85% Attendance
-custom_student = pd.DataFrame([[4.5, 7.0, 85]], columns=["Hours_Studied", "Sleep_Hours", "Attendance"])
+# Interactive Looping Prediction System
+print("=========================================")
+print("   STUDENT PASS/FAIL PREDICTION SYSTEM   ")
+print("=========================================")
 
-lr_pred = lr_model.predict(custom_student)
-tree_pred = tree_model.predict(custom_student)
+while True:
+    print("\n[1] Predict a Student's Outcome")
+    print("[2] Exit Program")
+    choice = input("Select an option (1 or 2): ").strip()
 
-print(f"Logistic Regression predicts: {lr_pred[0]}")
-print(f"Decision Tree predicts: {tree_pred[0]}")
+    if choice == '2':
+        print("\n👋 Exiting the system. Have a great day!")
+        break
+    elif choice == '1':
+        print("\n--- Enter Student Data ---")
+        try:
+            hours = float(input("Enter Hours Studied (0 to 10): "))
+            sleep = float(input("Enter Sleep Hours (0 to 10): "))
+            attendance = float(input("Enter Attendance Percentage (0 to 100): "))
+
+            custom_student = pd.DataFrame([[hours, sleep, attendance]], 
+                                           columns=["Hours_Studied", "Sleep_Hours", "Attendance"])
+
+            lr_pred = lr_model.predict(custom_student)[0]
+            tree_pred = tree_model.predict(custom_student)[0]
+
+            print("\n================ RESULTS ================")
+            print(f"📐 Logistic Regression Predicts: {lr_pred}")
+            print(f"🧱 Decision Tree Classifier Predicts: {tree_pred}")
+            print("=========================================")
+
+        except ValueError:
+            print("\n❌ Error: Please enter valid numbers!")
+    else:
+        print("\n❌ Invalid choice! Please type 1 or 2.")
