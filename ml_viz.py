@@ -13,7 +13,7 @@ df = pd.read_csv("student_data.csv")
 df["Hours_Studied"] = df["Hours_Studied"].fillna(df["Hours_Studied"].mean())
 
 # Training the model on the data 
-x = df[["Hours_Studied", "Sleep_Hours"]]
+x = df[["Hours_Studied", "Sleep_Hours", "Attendance"]]
 y = df["Passed"]
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
