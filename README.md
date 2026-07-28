@@ -1,5 +1,5 @@
 # 🔮 Enterprise Telco Customer Churn Prediction Engine
-![App Preview](Project_03_Telco_Customer_Churn/dashboard.png)
+![App Preview](Project_03_Telco_Customer_Churn/dashboard.png.png)
 An end-to-end Machine Learning web application that predicts real-time customer churn probability for telecommunications providers. Built using **Python**, **XGBoost**, **SMOTE**, and **Streamlit**, and deployed live on **Streamlit Cloud**.
 
 👉 **[Live Interactive App](https://sadasantosh-telco-churn.streamlit.app)**
