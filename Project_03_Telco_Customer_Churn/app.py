@@ -1,9 +1,19 @@
+import sys
+import subprocess
+
+# Auto-install missing packages on Streamlit Cloud if requirements.txt was skipped
+try:
+    import xgboost as xgb
+    import sklearn
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "xgboost", "scikit-learn", "joblib"])
+    import xgboost as xgb
+    import sklearn
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
-import xgboost as xgb
-
 # Set Page Config
 st.set_page_config(
     page_title="Telco Churn Predictor",
