@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
+try:
+    import joblib
+except ImportError:
+    from sklearn.externals import joblib
 
 # Set Page Config
 st.set_page_config(
