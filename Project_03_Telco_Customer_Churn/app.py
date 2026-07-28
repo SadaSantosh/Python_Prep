@@ -18,16 +18,17 @@ to evaluate customer churn probability in real time. Adjust the customer profile
 """)
 st.divider()
 
-# 2. Load Model & Scaler Artifacts
+# 2. Load Model & Scaler Artifacts using native pickle
 @st.cache_resource
 def load_artifacts():
- with open("Project_03_Telco_Customer_Churn/best_churn_model.pkl", "rb") as f:
-    model = pickle.load(f)
-with open("Project_03_Telco_Customer_Churn/scaler.pkl", "rb") as f:
-    scaler = pickle.load(f)
-    # Load sample clean dataset to extract feature column alignment
-    df_sample = pd.read_csv("project_03_telco_customer_churn/telco_churn_cleaned.csv")
+    with open("Project_03_Telco_Customer_Churn/best_churn_model.pkl", "rb") as f:
+        model = pickle.load(f)
+    with open("Project_03_Telco_Customer_Churn/scaler.pkl", "rb") as f:
+        scaler = pickle.load(f)
+        
+    df_sample = pd.read_csv("Project_03_Telco_Customer_Churn/telco_churn_cleaned.csv")
     feature_cols = [c for c in df_sample.columns if c != 'Churn']
+    
     return model, scaler, feature_cols
 
 try:
@@ -57,31 +58,25 @@ partner = st.sidebar.selectbox("Has Partner?", ["Yes", "No"])
 dependents = st.sidebar.selectbox("Has Dependents?", ["Yes", "No"])
 
 # 4. Feature Construction & Normalization
-# Engineered Features
 avg_monthly_cost = total_charges / max(tenure, 1)
 monthly_price_diff = monthly_charges - avg_monthly_cost
 
-# Scale numeric attributes using serialized Scaler
 num_df = pd.DataFrame([[tenure, monthly_charges, total_charges, avg_monthly_cost, monthly_price_diff]], 
                       columns=['tenure', 'MonthlyCharges', 'TotalCharges', 'Avg_Monthly_Cost', 'Monthly_Price_Diff'])
 scaled_numerics = scaler.transform(num_df)[0]
 
-# Build input dictionary initialized to zeros matching training feature matrix
 input_data = {col: 0 for col in feature_cols}
 
-# Populate scaled numerics
 input_data['tenure'] = scaled_numerics[0]
 input_data['MonthlyCharges'] = scaled_numerics[1]
 input_data['TotalCharges'] = scaled_numerics[2]
 input_data['Avg_Monthly_Cost'] = scaled_numerics[3]
 input_data['Monthly_Price_Diff'] = scaled_numerics[4]
 
-# Populate binary maps
 input_data['PaperlessBilling'] = 1 if paperless == "Yes" else 0
 input_data['Partner'] = 1 if partner == "Yes" else 0
 input_data['Dependents'] = 1 if dependents == "Yes" else 0
 
-# Populate One-Hot Dummies dynamically
 if f"Contract_{contract}" in input_data:
     input_data[f"Contract_{contract}"] = 1
 if f"InternetService_{internet_service}" in input_data:
