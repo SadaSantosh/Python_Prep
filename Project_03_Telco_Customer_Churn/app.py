@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
+import pickle
 
 # Set Page Config
 st.set_page_config(
@@ -21,8 +21,10 @@ st.divider()
 # 2. Load Model & Scaler Artifacts
 @st.cache_resource
 def load_artifacts():
-    model = joblib.load("project_03_telco_customer_churn/best_churn_model.pkl")
-    scaler = joblib.load("project_03_telco_customer_churn/scaler.pkl")
+ with open("Project_03_Telco_Customer_Churn/best_churn_model.pkl", "rb") as f:
+    model = pickle.load(f)
+with open("Project_03_Telco_Customer_Churn/scaler.pkl", "rb") as f:
+    scaler = pickle.load(f)
     # Load sample clean dataset to extract feature column alignment
     df_sample = pd.read_csv("project_03_telco_customer_churn/telco_churn_cleaned.csv")
     feature_cols = [c for c in df_sample.columns if c != 'Churn']
