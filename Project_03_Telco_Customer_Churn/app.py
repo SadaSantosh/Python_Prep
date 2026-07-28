@@ -1,19 +1,7 @@
-import sys
-import subprocess
-
-# Auto-install missing packages into user directory (bypasses permission errors)
-try:
-    import xgboost as xgb
-    import sklearn
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", "xgboost", "scikit-learn", "joblib"])
-    import xgboost as xgb
-    import sklearn
-
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
+import joblib
 
 # Set Page Config
 st.set_page_config(
@@ -30,17 +18,13 @@ to evaluate customer churn probability in real time. Adjust the customer profile
 """)
 st.divider()
 
-# 2. Load Model & Scaler Artifacts
+# 2. Load Model & Scaler Artifacts using joblib
 @st.cache_resource
 def load_artifacts():
-    with open("Project_03_Telco_Customer_Churn/best_churn_model.pkl", "rb") as f:
-        model = pickle.load(f)
-    with open("Project_03_Telco_Customer_Churn/scaler.pkl", "rb") as f:
-        scaler = pickle.load(f)
-        
+    model = joblib.load("Project_03_Telco_Customer_Churn/best_churn_model.pkl")
+    scaler = joblib.load("Project_03_Telco_Customer_Churn/scaler.pkl")
     df_sample = pd.read_csv("Project_03_Telco_Customer_Churn/telco_churn_cleaned.csv")
     feature_cols = [c for c in df_sample.columns if c != 'Churn']
-    
     return model, scaler, feature_cols
 
 try:
