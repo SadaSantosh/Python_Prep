@@ -97,7 +97,7 @@ st.markdown("""
         border-color: rgba(255, 255, 255, 0.1);
     }
 </style>
-""", unsafe_allow_cookies=True, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # 3. Header Banner
 st.title("🔮 Enterprise Telco Churn AI Engine")
@@ -108,7 +108,7 @@ Real-time customer risk evaluation powered by an optimized <b>XGBoost Machine Le
 """, unsafe_allow_html=True)
 st.divider()
 
-# 4. Load Model & Scaler
+# 4. Load Model & Scaler Dynamically
 @st.cache_resource
 def load_artifacts():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
