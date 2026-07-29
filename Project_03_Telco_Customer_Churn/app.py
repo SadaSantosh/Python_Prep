@@ -18,12 +18,21 @@ to evaluate real-time customer churn probability and analyze batch customer reco
 """)
 st.divider()
 
-# Load Artifacts
+import os
+
+# Load Artifacts safely across any environment/casing
 @st.cache_resource
 def load_artifacts():
-    model = joblib.load("project_03_telco_customer_churn/best_churn_model.pkl")
-    scaler = joblib.load("project_03_telco_customer_churn/scaler.pkl")
-    df_sample = pd.read_csv("project_03_telco_customer_churn/telco_churn_cleaned.csv")
+    # Get current directory of app.py dynamically
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    
+    model_path = os.path.join(BASE_DIR, "best_churn_model.pkl")
+    scaler_path = os.path.join(BASE_DIR, "scaler.pkl")
+    csv_path = os.path.join(BASE_DIR, "telco_churn_cleaned.csv")
+    
+    model = joblib.load(model_path)
+    scaler = joblib.load(scaler_path)
+    df_sample = pd.read_csv(csv_path)
     feature_cols = [c for c in df_sample.columns if c != 'Churn']
     return model, scaler, feature_cols, df_sample
 
