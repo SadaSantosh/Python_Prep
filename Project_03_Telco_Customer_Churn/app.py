@@ -12,66 +12,69 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Advanced Custom CSS: Floating Sidebar + Background Image + Neon Glass
+# 2. ADAPTIVE CSS: Background Image + Dynamic Glassmorphism
 st.markdown("""
 <style>
-    /* FIX: Make the top header transparent so it doesn't create a white block */
+    /* FIX: Transparent Header to prevent white blocks */
     [data-testid="stHeader"] {
         background-color: transparent !important;
     }
 
-    /* Full Page High-Tech Background Image with Dark Overlay */
+    /* Base Background Image */
     .stApp {
-        background: linear-gradient(rgba(10, 15, 30, 0.85), rgba(10, 15, 30, 0.92)),
-                    url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop') !important;
+        background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop') !important;
         background-size: cover !important;
         background-position: center !important;
         background-attachment: fixed !important;
-        color: #f8fafc !important;
     }
     
-    /* FLOATING GLASS SIDEBAR */
+    /* Dynamic Theme Overlay (Adapts to Light/Dark Mode automatically) */
+    [data-testid="stAppViewContainer"] {
+        background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+    }
+    
+    /* ADAPTIVE FLOATING SIDEBAR */
     section[data-testid="stSidebar"] {
-        background: rgba(15, 23, 42, 0.65) !important;
+        background-color: color-mix(in srgb, var(--secondary-background-color) 70%, transparent) !important;
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
         border-radius: 20px !important;
         margin: 15px !important;
         height: calc(100vh - 30px) !important;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
     }
 
-    /* GLASS CARDS FOR CONTENT & METRICS */
+    /* ADAPTIVE GLASS CARDS */
     div[data-testid="stMetric"], .stAlert {
-        background: rgba(255, 255, 255, 0.04) !important;
+        background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
         backdrop-filter: blur(16px) !important;
         -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent) !important;
         border-radius: 18px !important;
         padding: 24px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15) !important;
         transition: all 0.3s ease-in-out !important;
     }
     
     div[data-testid="stMetric"]:hover {
         transform: translateY(-5px) scale(1.01) !important;
-        border-color: rgba(99, 102, 241, 0.6) !important;
-        box-shadow: 0 12px 40px rgba(99, 102, 241, 0.25) !important;
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 12px 40px color-mix(in srgb, var(--primary-color) 30%, transparent) !important;
     }
 
     /* MODERN NEON TABS */
     .stTabs [data-baseweb="tab-list"] {
         gap: 15px;
-        background: rgba(255, 255, 255, 0.03);
+        background: transparent;
         padding: 10px;
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .stTabs [data-baseweb="tab"] {
         border-radius: 10px;
-        color: #94a3b8;
+        color: var(--text-color) !important;
+        background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
         font-weight: 700;
         padding: 12px 24px;
         transition: all 0.3s ease;
@@ -80,7 +83,8 @@ st.markdown("""
     .stTabs [aria-selected="true"] {
         background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
         color: #ffffff !important;
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
     }
 
     /* GLOWING GRADIENT BUTTONS */
@@ -99,20 +103,12 @@ st.markdown("""
         transform: scale(1.02) !important;
         box-shadow: 0 8px 35px rgba(217, 70, 239, 0.6) !important;
     }
-
-    /* TYPOGRAPHY */
-    h1 {
-        background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800 !important;
-    }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Header Title
+# 3. Header Title (Using theme-adaptive text color)
 st.title("⚡ Enterprise Telco Churn AI Command Center")
-st.markdown("<p style='color: #cbd5e1; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
+st.markdown("<p style='color: var(--text-color); opacity: 0.8; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
 st.divider()
 
 # 4. Load Models Safely
@@ -304,7 +300,7 @@ with tab4:
 st.divider()
 st.markdown("""
 <div style='text-align: center; padding: 20px;'>
-    <p style='color: #cbd5e1; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.0 | Cyber Glass Edition</p>
+    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.0 | Theme-Adaptive Edition</p>
     <p style='font-size: 1.1rem; font-weight: 700; color: #a855f7; margin-top: -10px;'>
         🚀 Developed by Sada Santosh Kalmath
     </p>
