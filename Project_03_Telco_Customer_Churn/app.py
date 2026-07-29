@@ -12,10 +12,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. ADAPTIVE CSS: Master Glass Pane Layout
+# 2. BULLETPROOF ADAPTIVE CSS
 st.markdown("""
 <style>
-    /* FIX: Transparent Header to prevent white blocks at the top */
+    /* Transparent Header */
     [data-testid="stHeader"] {
         background-color: transparent !important;
     }
@@ -26,52 +26,42 @@ st.markdown("""
         background-size: cover !important;
         background-position: center !important;
         background-attachment: fixed !important;
+        z-index: 1;
     }
     
-    /* Remove default app background so the image shines through */
-    [data-testid="stAppViewContainer"] {
-        background-color: transparent !important;
-    }
-    
-    /* THE MAGIC FIX: Master Glass Pane for Main Content */
-    /* This creates a solid, frosted backing behind ALL text so it is readable in Light AND Dark mode */
-    .block-container {
-        background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
-        backdrop-filter: blur(25px) !important;
-        -webkit-backdrop-filter: blur(25px) !important;
-        border-radius: 24px !important;
-        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
-        padding: 3rem 4rem !important;
-        margin-top: 3rem !important;
-        margin-bottom: 3rem !important;
-        max-width: 90% !important; /* Keeps the glass pane centered with the background showing on edges */
-    }
-    
-    /* ADAPTIVE FLOATING SIDEBAR */
-    section[data-testid="stSidebar"] {
-        background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
-        backdrop-filter: blur(25px) !important;
-        -webkit-backdrop-filter: blur(25px) !important;
-        border-right: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+    /* THE MAGIC OVERLAY: Adapts perfectly to Light/Dark Mode in all browsers */
+    .stApp::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: var(--background-color);
+        opacity: 0.85; /* Creates a dark wash in Dark Mode, and a white frost in Light Mode */
+        z-index: -1;
+        pointer-events: none;
     }
 
-    /* ADAPTIVE GLASS CARDS */
+    /* Floating Adaptive Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: var(--secondary-background-color) !important;
+        border-right: 1px solid rgba(128, 128, 128, 0.2) !important;
+    }
+
+    /* Solid Adaptive Cards for 100% Text Readability */
     div[data-testid="stMetric"], .stAlert {
-        background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
-        border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent) !important;
+        background-color: var(--secondary-background-color) !important;
+        border: 1px solid rgba(128, 128, 128, 0.2) !important;
         border-radius: 16px !important;
         padding: 20px !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
         transition: transform 0.3s ease, border-color 0.3s ease !important;
     }
     
     div[data-testid="stMetric"]:hover {
         transform: translateY(-4px) !important;
-        border-color: var(--primary-color) !important;
+        border-color: #a855f7 !important;
     }
 
-    /* MODERN NEON TABS */
+    /* Adaptive Tabs */
     .stTabs [data-baseweb="tab-list"] {
         gap: 15px;
         background: transparent;
@@ -81,8 +71,8 @@ st.markdown("""
     .stTabs [data-baseweb="tab"] {
         border-radius: 8px;
         color: var(--text-color) !important;
-        background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
-        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        background-color: var(--secondary-background-color) !important;
+        border: 1px solid rgba(128, 128, 128, 0.2) !important;
         font-weight: 700;
         padding: 10px 20px;
         transition: all 0.3s ease;
@@ -95,7 +85,7 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
     }
 
-    /* GLOWING GRADIENT BUTTONS */
+    /* Glowing Gradient Buttons */
     .stButton > button {
         background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%) !important;
         color: white !important;
@@ -308,7 +298,7 @@ with tab4:
 st.divider()
 st.markdown("""
 <div style='text-align: center; padding: 20px;'>
-    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.1 | Master Glass Edition</p>
+    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.2 | Adaptive Master Edition</p>
     <p style='font-size: 1.1rem; font-weight: 700; color: #a855f7; margin-top: -10px;'>
         🚀 Developed by Sada Santosh Kalmath
     </p>
