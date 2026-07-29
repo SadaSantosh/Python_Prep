@@ -102,6 +102,12 @@ st.markdown("""
         -webkit-text-fill-color: transparent;
         font-weight: 800 !important;
     }
+    
+    /* CUSTOM ALERTS */
+    .stAlert {
+        border-radius: 12px !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -131,13 +137,13 @@ except Exception as e:
 # 5. App Tabs
 tab1, tab2, tab3, tab4 = st.tabs([
     "👤 Single Risk Assessment", 
-    "🎯 Retention Simulator (NEW)", 
-    "📁 Batch CSV Processing", 
+    "🎯 Retention Simulator", 
+    "📁 Batch Financial Risk", 
     "📊 Model Analytics"
 ])
 
 # ==========================================
-# TAB 1: SINGLE PREDICTION
+# TAB 1: SINGLE PREDICTION + AI REPORT
 # ==========================================
 with tab1:
     st.sidebar.markdown("---")
@@ -198,30 +204,41 @@ with tab1:
         input_df = build_input_df(monthly_charges, tech_support, contract)
         churn_prob = model.predict_proba(input_df)[0][1] * 100
 
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns([1, 2])
         with col1:
             st.metric(label="Predicted Churn Score", value=f"{churn_prob:.1f}%")
             st.progress(int(churn_prob))
             
         with col2:
+            st.write("### 🤖 AI Risk Analysis Report")
+            # Dynamic natural language report generation
+            reasons = []
+            if contract == "Month-to-month": reasons.append("- **High-Risk Contract:** Month-to-month billing creates low switching friction.")
+            if internet_service == "Fiber optic": reasons.append("- **Service Type:** Fiber optic customers historically show higher churn volatility.")
+            if tech_support == "No": reasons.append("- **Lack of Support:** Customer has no tech support, reducing overall satisfaction.")
+            if tenure < 12: reasons.append("- **New Customer:** Account is less than a year old, a critical drop-off period.")
+            if payment_method == "Electronic check": reasons.append("- **Payment Method:** Electronic check users show higher default/churn rates.")
+            
             if churn_prob >= 50.0:
                 st.error("⚠️ **HIGH RETENTION RISK**")
-                st.warning("Customer exhibits high cancellation probability! Use the Retention Simulator tab to test offers.")
+                if reasons:
+                    st.write("**Primary Risk Drivers Identified:**")
+                    for r in reasons: st.write(r)
             else:
                 st.success("✅ **LOW RETENTION RISK**")
-                st.info("Account is healthy and engaged.")
+                st.write("Customer exhibits strong loyalty indicators. Existing plan is optimal.")
 
 # ==========================================
-# TAB 2: RETENTION SIMULATOR (NEW FEATURE)
+# TAB 2: RETENTION SIMULATOR
 # ==========================================
 with tab2:
     st.subheader("🎯 Interactive What-If Retention Strategy Simulator")
-    st.write("Simulate offer strategies (e.g. monthly discounts or contract upgrades) to see how much they lower the customer's churn risk score!")
+    st.write("Simulate offer strategies to see how much they lower the customer's churn risk score!")
     
     col_sim1, col_sim2 = st.columns(2)
     
     with col_sim1:
-        discount = st.slider("Offer Monthly Discount ($)", 0, 30, 10)
+        discount = st.slider("Offer Monthly Discount ($)", 0, int(monthly_charges), 10)
         upgrade_support = st.checkbox("Add Free Tech Support Package", value=True)
         switch_contract = st.selectbox("Upgrade Contract Terms", [contract, "One year", "Two year"])
         
@@ -237,7 +254,7 @@ with tab2:
     
     with col_sim2:
         st.metric(label="Original Churn Score", value=f"{base_score:.1f}%")
-        st.metric(label="Simulated Churn Score After Offer", value=f"{sim_score:.1f}%", delta=f"-{risk_reduction:.1f}% Risk")
+        st.metric(label="Simulated Score After Offer", value=f"{sim_score:.1f}%", delta=f"-{risk_reduction:.1f}% Risk")
         
         if sim_score < 50.0:
             st.success("🎉 This retention strategy successfully brings the customer into the SAFE zone!")
@@ -245,17 +262,16 @@ with tab2:
             st.warning("⚡ Consider upgrading contract duration or offering a higher discount to lower risk further.")
 
 # ==========================================
-# TAB 3: BATCH PROCESSING
+# TAB 3: BATCH FINANCIAL RISK
 # ==========================================
 with tab3:
-    st.subheader("📁 Enterprise Batch Dataset Scoring")
-    uploaded_file = st.file_uploader("Upload customer CSV file", type=["csv"])
+    st.subheader("📁 Batch Scoring & Financial Risk Impact")
+    uploaded_file = st.file_uploader("Upload customer CSV file to calculate total revenue at risk", type=["csv"])
     
     if uploaded_file is not None:
         raw_batch = pd.read_csv(uploaded_file)
-        st.write("📄 **File Preview:**", raw_batch.head())
         
-        if st.button("⚡ Run Batch Scoring", use_container_width=True):
+        if st.button("⚡ Run Financial Batch Scoring", use_container_width=True):
             batch_features = df_sample.drop(columns=['Churn'], errors='ignore')
             batch_probs = model.predict_proba(batch_features)[:, 1] * 100
             
@@ -263,14 +279,24 @@ with tab3:
             result_df['Churn_Probability_%'] = np.round(batch_probs[:len(raw_batch)], 2)
             result_df['Risk_Level'] = np.where(result_df['Churn_Probability_%'] >= 50.0, 'HIGH RISK', 'LOW RISK')
             
-            st.success(f"Scored {len(result_df)} records!")
+            # Feature 2: Calculate Financial Impact (Assuming MonthlyCharges column exists in uploaded CSV)
+            if 'MonthlyCharges' in result_df.columns:
+                high_risk_users = result_df[result_df['Risk_Level'] == 'HIGH RISK']
+                monthly_revenue_at_risk = high_risk_users['MonthlyCharges'].sum()
+                annual_revenue_at_risk = monthly_revenue_at_risk * 12
+                
+                col_fin1, col_fin2, col_fin3 = st.columns(3)
+                col_fin1.metric("Total Customers Scored", len(result_df))
+                col_fin2.metric("High Risk Accounts", len(high_risk_users))
+                col_fin3.metric("Annual Revenue at Risk", f"${annual_revenue_at_risk:,.2f}", delta="-High Financial Threat", delta_color="inverse")
+            
             st.dataframe(result_df.head(10))
             
             csv_data = result_df.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Download Scored Results CSV",
+                label="📥 Download Scored Financial Results",
                 data=csv_data,
-                file_name="churn_batch_scored.csv",
+                file_name="churn_financial_batch_scored.csv",
                 mime="text/csv",
                 use_container_width=True
             )
@@ -296,4 +322,4 @@ with tab4:
         st.scatter_chart(df_sample, x='tenure', y='MonthlyCharges', color='Churn')
 
 st.divider()
-st.markdown("<p style='text-align: center; color: #94a3b8;'>🔮 Enterprise Telco Churn Engine v3.0 | Cyber Glassmorphism Edition</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #94a3b8;'>🔮 Enterprise Telco Churn Engine v3.5 | Cyber Glassmorphism + AI Features</p>", unsafe_allow_html=True)
