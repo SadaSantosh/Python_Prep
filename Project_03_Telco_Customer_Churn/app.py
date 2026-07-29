@@ -12,10 +12,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. ADAPTIVE CSS: Background Image + Dynamic Glassmorphism
+# 2. ADAPTIVE CSS: Master Glass Pane Layout
 st.markdown("""
 <style>
-    /* FIX: Transparent Header to prevent white blocks */
+    /* FIX: Transparent Header to prevent white blocks at the top */
     [data-testid="stHeader"] {
         background-color: transparent !important;
     }
@@ -28,55 +28,63 @@ st.markdown("""
         background-attachment: fixed !important;
     }
     
-    /* Dynamic Theme Overlay (Adapts to Light/Dark Mode automatically) */
+    /* Remove default app background so the image shines through */
     [data-testid="stAppViewContainer"] {
+        background-color: transparent !important;
+    }
+    
+    /* THE MAGIC FIX: Master Glass Pane for Main Content */
+    /* This creates a solid, frosted backing behind ALL text so it is readable in Light AND Dark mode */
+    .block-container {
         background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+        backdrop-filter: blur(25px) !important;
+        -webkit-backdrop-filter: blur(25px) !important;
+        border-radius: 24px !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
+        padding: 3rem 4rem !important;
+        margin-top: 3rem !important;
+        margin-bottom: 3rem !important;
+        max-width: 90% !important; /* Keeps the glass pane centered with the background showing on edges */
     }
     
     /* ADAPTIVE FLOATING SIDEBAR */
     section[data-testid="stSidebar"] {
-        background-color: color-mix(in srgb, var(--secondary-background-color) 70%, transparent) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
-        border-radius: 20px !important;
-        margin: 15px !important;
-        height: calc(100vh - 30px) !important;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
+        background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+        backdrop-filter: blur(25px) !important;
+        -webkit-backdrop-filter: blur(25px) !important;
+        border-right: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
     }
 
     /* ADAPTIVE GLASS CARDS */
     div[data-testid="stMetric"], .stAlert {
         background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent) !important;
-        border-radius: 18px !important;
-        padding: 24px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15) !important;
-        transition: all 0.3s ease-in-out !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent) !important;
+        border-radius: 16px !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+        transition: transform 0.3s ease, border-color 0.3s ease !important;
     }
     
     div[data-testid="stMetric"]:hover {
-        transform: translateY(-5px) scale(1.01) !important;
+        transform: translateY(-4px) !important;
         border-color: var(--primary-color) !important;
-        box-shadow: 0 12px 40px color-mix(in srgb, var(--primary-color) 30%, transparent) !important;
     }
 
     /* MODERN NEON TABS */
     .stTabs [data-baseweb="tab-list"] {
         gap: 15px;
         background: transparent;
-        padding: 10px;
+        padding: 10px 0px;
     }
 
     .stTabs [data-baseweb="tab"] {
-        border-radius: 10px;
+        border-radius: 8px;
         color: var(--text-color) !important;
         background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
         border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
         font-weight: 700;
-        padding: 12px 24px;
+        padding: 10px 20px;
         transition: all 0.3s ease;
     }
 
@@ -93,20 +101,20 @@ st.markdown("""
         color: white !important;
         font-weight: 700 !important;
         border: none !important;
-        border-radius: 12px !important;
-        padding: 14px 28px !important;
-        box-shadow: 0 4px 25px rgba(217, 70, 239, 0.35) !important;
+        border-radius: 10px !important;
+        padding: 12px 24px !important;
+        box-shadow: 0 4px 20px rgba(217, 70, 239, 0.3) !important;
         transition: all 0.3s ease !important;
     }
     
     .stButton > button:hover {
-        transform: scale(1.02) !important;
-        box-shadow: 0 8px 35px rgba(217, 70, 239, 0.6) !important;
+        transform: scale(1.03) !important;
+        box-shadow: 0 8px 30px rgba(217, 70, 239, 0.5) !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Header Title (Using theme-adaptive text color)
+# 3. Header Title
 st.title("⚡ Enterprise Telco Churn AI Command Center")
 st.markdown("<p style='color: var(--text-color); opacity: 0.8; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
 st.divider()
@@ -300,7 +308,7 @@ with tab4:
 st.divider()
 st.markdown("""
 <div style='text-align: center; padding: 20px;'>
-    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.0 | Theme-Adaptive Edition</p>
+    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.1 | Master Glass Edition</p>
     <p style='font-size: 1.1rem; font-weight: 700; color: #a855f7; margin-top: -10px;'>
         🚀 Developed by Sada Santosh Kalmath
     </p>
