@@ -4,111 +4,113 @@ import numpy as np
 import joblib
 import os
 
-# 1. Set Page Config
+# 1. Page Configuration
 st.set_page_config(
-    page_title="Telco Churn AI | Enterprise Risk Engine",
+    page_title="Telco Churn AI | Enterprise Risk Command Center",
     page_icon="🔮",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# 2. Inject Custom Glassmorphism CSS Theme
+# 2. Advanced Custom CSS: Floating Sidebar + Background Image + Neon Glass
 st.markdown("""
 <style>
-    /* Dark Gradient Background */
+    /* Full Page High-Tech Background Image with Dark Overlay */
     .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        background: linear-gradient(rgba(10, 15, 30, 0.85), rgba(10, 15, 30, 0.92)),
+                    url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         color: #f8fafc;
     }
     
-    /* Sidebar Styling */
+    /* FLOATING GLASS SIDEBAR */
     section[data-testid="stSidebar"] {
-        background: rgba(15, 23, 42, 0.75) !important;
-        backdrop-filter: blur(16px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.65) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 20px !important;
+        margin: 15px !important;
+        height: calc(100vh - 30px) !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
     }
-    
-    /* Glassmorphism Cards */
-    div[data-testid="stMetric"], .glass-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        transition: transform 0.3s ease, border-color 0.3s ease;
+
+    /* GLASS CARDS FOR CONTENT & METRICS */
+    div[data-testid="stMetric"], .glass-container {
+        background: rgba(255, 255, 255, 0.04) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 18px !important;
+        padding: 24px !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        transition: all 0.3s ease-in-out !important;
     }
     
     div[data-testid="stMetric"]:hover {
-        transform: translateY(-4px);
-        border-color: rgba(99, 102, 241, 0.5);
+        transform: translateY(-5px) scale(1.01) !important;
+        border-color: rgba(99, 102, 241, 0.6) !important;
+        box-shadow: 0 12px 40px rgba(99, 102, 241, 0.25) !important;
     }
 
-    /* Tabs Styling */
+    /* MODERN NEON TABS */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 12px;
+        gap: 15px;
         background: rgba(255, 255, 255, 0.03);
-        padding: 8px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 10px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
+        border-radius: 10px;
         color: #94a3b8;
-        font-weight: 600;
-        padding: 10px 20px;
+        font-weight: 700;
+        padding: 12px 24px;
         transition: all 0.3s ease;
     }
 
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
         color: #ffffff !important;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
     }
 
-    /* Custom Gradient Buttons */
+    /* GLOWING GRADIENT BUTTONS */
     .stButton > button {
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-        color: white;
-        font-weight: 700;
-        border: none;
-        border-radius: 12px;
-        padding: 12px 24px;
-        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%) !important;
+        color: white !important;
+        font-weight: 700 !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 14px 28px !important;
+        box-shadow: 0 4px 25px rgba(217, 70, 239, 0.35) !important;
+        transition: all 0.3s ease !important;
     }
     
     .stButton > button:hover {
-        transform: scale(1.02);
-        box-shadow: 0 6px 25px rgba(168, 85, 247, 0.5);
-        color: white;
+        transform: scale(1.02) !important;
+        box-shadow: 0 8px 35px rgba(217, 70, 239, 0.6) !important;
     }
 
-    /* Subheaders & Titles */
-    h1, h2, h3 {
-        color: #ffffff !important;
-        font-weight: 700 !important;
-    }
-    
-    /* Divider */
-    hr {
-        border-color: rgba(255, 255, 255, 0.1);
+    /* TYPOGRAPHY */
+    h1 {
+        background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800 !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Header Banner
-st.title("🔮 Enterprise Telco Churn AI Engine")
-st.markdown("""
-<div style='color: #94a3b8; font-size: 1.1rem; margin-bottom: 20px;'>
-Real-time customer risk evaluation powered by an optimized <b>XGBoost Machine Learning Pipeline</b> with <b>SMOTE Class Balancing</b>.
-</div>
-""", unsafe_allow_html=True)
+# 3. Header Title
+st.title("⚡ Enterprise Telco Churn AI Command Center")
+st.markdown("<p style='color: #cbd5e1; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
 st.divider()
 
-# 4. Load Model & Scaler Dynamically
+# 4. Load Models Safely
 @st.cache_resource
 def load_artifacts():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -120,15 +122,16 @@ def load_artifacts():
 
 try:
     model, scaler, feature_cols, df_sample = load_artifacts()
-    st.sidebar.markdown("### 🟢 System Status")
-    st.sidebar.success("XGBoost Model Active")
+    st.sidebar.markdown("### 🟢 Engine Status")
+    st.sidebar.success("XGBoost Risk Pipeline Active")
 except Exception as e:
     st.error(f"❌ Error loading model artifacts: {e}")
     st.stop()
 
-# 5. Application Tabs
-tab1, tab2, tab3 = st.tabs([
+# 5. App Tabs
+tab1, tab2, tab3, tab4 = st.tabs([
     "👤 Single Risk Assessment", 
+    "🎯 Retention Simulator (NEW)", 
     "📁 Batch CSV Processing", 
     "📊 Model Analytics"
 ])
@@ -138,9 +141,9 @@ tab1, tab2, tab3 = st.tabs([
 # ==========================================
 with tab1:
     st.sidebar.markdown("---")
-    st.sidebar.header("📋 Customer Profile Parameters")
+    st.sidebar.header("📋 Customer Profile")
 
-    tenure = st.sidebar.slider("Customer Tenure (Months)", 1, 72, 12)
+    tenure = st.sidebar.slider("Tenure (Months)", 1, 72, 12)
     monthly_charges = st.sidebar.number_input("Monthly Charges ($)", 18.0, 120.0, 70.0)
     total_charges = st.sidebar.number_input("Total Charges ($)", 18.0, 9000.0, float(tenure * monthly_charges))
 
@@ -156,43 +159,44 @@ with tab1:
     partner = st.sidebar.selectbox("Has Partner?", ["Yes", "No"])
     dependents = st.sidebar.selectbox("Has Dependents?", ["Yes", "No"])
 
-    # Feature Construction
-    avg_monthly_cost = total_charges / max(tenure, 1)
-    monthly_price_diff = monthly_charges - avg_monthly_cost
+    # Feature Scaling Function
+    def build_input_df(m_charges, t_support, c_type):
+        avg_cost = total_charges / max(tenure, 1)
+        price_diff = m_charges - avg_cost
 
-    num_df = pd.DataFrame([[tenure, monthly_charges, total_charges, avg_monthly_cost, monthly_price_diff]], 
-                          columns=['tenure', 'MonthlyCharges', 'TotalCharges', 'Avg_Monthly_Cost', 'Monthly_Price_Diff'])
-    scaled_numerics = scaler.transform(num_df)[0]
+        num_df = pd.DataFrame([[tenure, m_charges, total_charges, avg_cost, price_diff]], 
+                              columns=['tenure', 'MonthlyCharges', 'TotalCharges', 'Avg_Monthly_Cost', 'Monthly_Price_Diff'])
+        scaled_num = scaler.transform(num_df)[0]
 
-    input_data = {col: 0 for col in feature_cols}
-    input_data['tenure'] = scaled_numerics[0]
-    input_data['MonthlyCharges'] = scaled_numerics[1]
-    input_data['TotalCharges'] = scaled_numerics[2]
-    input_data['Avg_Monthly_Cost'] = scaled_numerics[3]
-    input_data['Monthly_Price_Diff'] = scaled_numerics[4]
+        data = {col: 0 for col in feature_cols}
+        data['tenure'] = scaled_num[0]
+        data['MonthlyCharges'] = scaled_num[1]
+        data['TotalCharges'] = scaled_num[2]
+        data['Avg_Monthly_Cost'] = scaled_num[3]
+        data['Monthly_Price_Diff'] = scaled_num[4]
 
-    input_data['PaperlessBilling'] = 1 if paperless == "Yes" else 0
-    input_data['Partner'] = 1 if partner == "Yes" else 0
-    input_data['Dependents'] = 1 if dependents == "Yes" else 0
+        data['PaperlessBilling'] = 1 if paperless == "Yes" else 0
+        data['Partner'] = 1 if partner == "Yes" else 0
+        data['Dependents'] = 1 if dependents == "Yes" else 0
 
-    if f"Contract_{contract}" in input_data:
-        input_data[f"Contract_{contract}"] = 1
-    if f"InternetService_{internet_service}" in input_data:
-        input_data[f"InternetService_{internet_service}"] = 1
-    if f"PaymentMethod_{payment_method}" in input_data:
-        input_data[f"PaymentMethod_{payment_method}"] = 1
-    if f"TechSupport_{tech_support}" in input_data:
-        input_data[f"TechSupport_{tech_support}"] = 1
-    if f"OnlineSecurity_{online_security}" in input_data:
-        input_data[f"OnlineSecurity_{online_security}"] = 1
+        if f"Contract_{c_type}" in data:
+            data[f"Contract_{c_type}"] = 1
+        if f"InternetService_{internet_service}" in data:
+            data[f"InternetService_{internet_service}"] = 1
+        if f"PaymentMethod_{payment_method}" in data:
+            data[f"PaymentMethod_{payment_method}"] = 1
+        if f"TechSupport_{t_support}" in data:
+            data[f"TechSupport_{t_support}"] = 1
+        if f"OnlineSecurity_{online_security}" in data:
+            data[f"OnlineSecurity_{online_security}"] = 1
 
-    input_df = pd.DataFrame([input_data])
+        return pd.DataFrame([data])
 
     st.subheader("⚡ Real-Time Probability Assessment")
     
-    if st.button("🚀 Calculate Churn Probability", use_container_width=True):
-        probabilities = model.predict_proba(input_df)[0]
-        churn_prob = probabilities[1] * 100
+    if st.button("🚀 Calculate Churn Risk", use_container_width=True):
+        input_df = build_input_df(monthly_charges, tech_support, contract)
+        churn_prob = model.predict_proba(input_df)[0][1] * 100
 
         col1, col2 = st.columns(2)
         with col1:
@@ -201,24 +205,57 @@ with tab1:
             
         with col2:
             if churn_prob >= 50.0:
-                st.error("⚠️ **HIGH RETENTION RISK DETECTED**")
-                st.warning("Action Recommended: Trigger 15% discount offer or complimentary service upgrade.")
+                st.error("⚠️ **HIGH RETENTION RISK**")
+                st.warning("Customer exhibits high cancellation probability! Use the Retention Simulator tab to test offers.")
             else:
                 st.success("✅ **LOW RETENTION RISK**")
-                st.info("Account healthy. High customer satisfaction likelihood.")
+                st.info("Account is healthy and engaged.")
 
 # ==========================================
-# TAB 2: BATCH PROCESSING
+# TAB 2: RETENTION SIMULATOR (NEW FEATURE)
 # ==========================================
 with tab2:
+    st.subheader("🎯 Interactive What-If Retention Strategy Simulator")
+    st.write("Simulate offer strategies (e.g. monthly discounts or contract upgrades) to see how much they lower the customer's churn risk score!")
+    
+    col_sim1, col_sim2 = st.columns(2)
+    
+    with col_sim1:
+        discount = st.slider("Offer Monthly Discount ($)", 0, 30, 10)
+        upgrade_support = st.checkbox("Add Free Tech Support Package", value=True)
+        switch_contract = st.selectbox("Upgrade Contract Terms", [contract, "One year", "Two year"])
+        
+    new_monthly = max(18.0, monthly_charges - discount)
+    new_support = "Yes" if upgrade_support else tech_support
+    
+    base_df = build_input_df(monthly_charges, tech_support, contract)
+    sim_df = build_input_df(new_monthly, new_support, switch_contract)
+    
+    base_score = model.predict_proba(base_df)[0][1] * 100
+    sim_score = model.predict_proba(sim_df)[0][1] * 100
+    risk_reduction = base_score - sim_score
+    
+    with col_sim2:
+        st.metric(label="Original Churn Score", value=f"{base_score:.1f}%")
+        st.metric(label="Simulated Churn Score After Offer", value=f"{sim_score:.1f}%", delta=f"-{risk_reduction:.1f}% Risk")
+        
+        if sim_score < 50.0:
+            st.success("🎉 This retention strategy successfully brings the customer into the SAFE zone!")
+        else:
+            st.warning("⚡ Consider upgrading contract duration or offering a higher discount to lower risk further.")
+
+# ==========================================
+# TAB 3: BATCH PROCESSING
+# ==========================================
+with tab3:
     st.subheader("📁 Enterprise Batch Dataset Scoring")
-    uploaded_file = st.file_uploader("Upload customer CSV file for batch inference", type=["csv"])
+    uploaded_file = st.file_uploader("Upload customer CSV file", type=["csv"])
     
     if uploaded_file is not None:
         raw_batch = pd.read_csv(uploaded_file)
-        st.write("📄 **Raw File Preview:**", raw_batch.head())
+        st.write("📄 **File Preview:**", raw_batch.head())
         
-        if st.button("⚡ Run Batch Risk Scoring", use_container_width=True):
+        if st.button("⚡ Run Batch Scoring", use_container_width=True):
             batch_features = df_sample.drop(columns=['Churn'], errors='ignore')
             batch_probs = model.predict_proba(batch_features)[:, 1] * 100
             
@@ -226,22 +263,22 @@ with tab2:
             result_df['Churn_Probability_%'] = np.round(batch_probs[:len(raw_batch)], 2)
             result_df['Risk_Level'] = np.where(result_df['Churn_Probability_%'] >= 50.0, 'HIGH RISK', 'LOW RISK')
             
-            st.success(f"Successfully processed {len(result_df)} accounts!")
+            st.success(f"Scored {len(result_df)} records!")
             st.dataframe(result_df.head(10))
             
             csv_data = result_df.to_csv(index=False).encode('utf-8')
             st.download_button(
                 label="📥 Download Scored Results CSV",
                 data=csv_data,
-                file_name="churn_predictions_scored.csv",
+                file_name="churn_batch_scored.csv",
                 mime="text/csv",
                 use_container_width=True
             )
 
 # ==========================================
-# TAB 3: MODEL ANALYTICS
+# TAB 4: MODEL ANALYTICS
 # ==========================================
-with tab3:
+with tab4:
     st.subheader("📊 Model Diagnostics & Feature Drivers")
     col1, col2 = st.columns(2)
     
@@ -252,7 +289,6 @@ with tab3:
                 'Feature': feature_cols,
                 'Importance': model.feature_importances_
             }).sort_values(by='Importance', ascending=False).head(10)
-            
             st.bar_chart(imp_df.set_index('Feature'))
             
     with col2:
@@ -260,4 +296,4 @@ with tab3:
         st.scatter_chart(df_sample, x='tenure', y='MonthlyCharges', color='Churn')
 
 st.divider()
-st.markdown("<p style='text-align: center; color: #64748b;'>🔮 Enterprise Telco Churn Engine v2.0 | Glassmorphic UI Edition</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #94a3b8;'>🔮 Enterprise Telco Churn Engine v3.0 | Cyber Glassmorphism Edition</p>", unsafe_allow_html=True)
