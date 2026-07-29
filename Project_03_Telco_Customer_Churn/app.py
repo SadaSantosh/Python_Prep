@@ -6,108 +6,111 @@ import os
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Telco Churn AI | Enterprise Risk Command Center",
+    page_title="Telco Churn AI | Enterprise Command Center",
     page_icon="🔮",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# 2. Advanced Custom CSS: Floating Sidebar + Background Image + Neon Glass
+# 2. Ultra-Sleek White & Grey Glassmorphism Theme
 st.markdown("""
 <style>
-    /* Full Page High-Tech Background Image with Dark Overlay */
+    /* Light Grey Slate Gradient Background */
     .stApp {
-        background: linear-gradient(rgba(10, 15, 30, 0.85), rgba(10, 15, 30, 0.92)),
-                    url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        color: #f8fafc;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+        color: #0f172a;
     }
     
-    /* FLOATING GLASS SIDEBAR */
+    /* FLOATING WHITE GLASS SIDEBAR */
     section[data-testid="stSidebar"] {
-        background: rgba(15, 23, 42, 0.65) !important;
+        background: rgba(255, 255, 255, 0.65) !important;
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
         border-radius: 20px !important;
         margin: 15px !important;
         height: calc(100vh - 30px) !important;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
     }
 
-    /* GLASS CARDS FOR CONTENT & METRICS */
+    /* WHITE FROSTED GLASS CARDS */
     div[data-testid="stMetric"], .glass-container {
-        background: rgba(255, 255, 255, 0.04) !important;
+        background: rgba(255, 255, 255, 0.7) !important;
         backdrop-filter: blur(16px) !important;
         -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border: 1px solid rgba(255, 255, 255, 0.9) !important;
         border-radius: 18px !important;
         padding: 24px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
         transition: all 0.3s ease-in-out !important;
     }
     
     div[data-testid="stMetric"]:hover {
-        transform: translateY(-5px) scale(1.01) !important;
-        border-color: rgba(99, 102, 241, 0.6) !important;
-        box-shadow: 0 12px 40px rgba(99, 102, 241, 0.25) !important;
+        transform: translateY(-4px) !important;
+        border-color: #6366f1 !important;
+        box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.15) !important;
     }
 
-    /* MODERN NEON TABS */
+    /* ELEGANT LIGHT TABS */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 15px;
-        background: rgba(255, 255, 255, 0.03);
-        padding: 10px;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 8px;
         border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.8);
     }
 
     .stTabs [data-baseweb="tab"] {
         border-radius: 10px;
-        color: #94a3b8;
+        color: #475569;
         font-weight: 700;
-        padding: 12px 24px;
+        padding: 10px 20px;
         transition: all 0.3s ease;
     }
 
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
         color: #ffffff !important;
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
     }
 
-    /* GLOWING GRADIENT BUTTONS */
+    /* PREMIUM GRADIENT BUTTONS */
     .stButton > button {
-        background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%) !important;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
         color: white !important;
         font-weight: 700 !important;
         border: none !important;
         border-radius: 12px !important;
-        padding: 14px 28px !important;
-        box-shadow: 0 4px 25px rgba(217, 70, 239, 0.35) !important;
+        padding: 12px 28px !important;
+        box-shadow: 0 4px 15px rgba(29, 78, 216, 0.3) !important;
         transition: all 0.3s ease !important;
     }
     
     .stButton > button:hover {
-        transform: scale(1.02) !important;
-        box-shadow: 0 8px 35px rgba(217, 70, 239, 0.6) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(29, 78, 216, 0.45) !important;
     }
 
     /* TYPOGRAPHY */
-    h1 {
-        background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    h1, h2, h3, h4, h5, h6 {
+        color: #0f172a !important;
         font-weight: 800 !important;
+    }
+
+    p, span, label {
+        color: #334155 !important;
+    }
+
+    /* DIVIDER */
+    hr {
+        border-color: rgba(148, 163, 184, 0.3);
     }
 </style>
 """, unsafe_allow_html=True)
 
 # 3. Header Title
-st.title("⚡ Enterprise Telco Churn AI Command Center")
-st.markdown("<p style='color: #cbd5e1; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
+st.title("🔮 Enterprise Telco Churn AI Command Center")
+st.markdown("<p style='color: #475569; font-size: 1.1rem; margin-bottom: 20px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
 st.divider()
 
 # 4. Load Models Safely
@@ -131,7 +134,7 @@ except Exception as e:
 # 5. App Tabs
 tab1, tab2, tab3, tab4 = st.tabs([
     "👤 Single Risk Assessment", 
-    "🎯 Retention Simulator (NEW)", 
+    "🎯 Retention Simulator", 
     "📁 Batch CSV Processing", 
     "📊 Model Analytics"
 ])
@@ -159,7 +162,6 @@ with tab1:
     partner = st.sidebar.selectbox("Has Partner?", ["Yes", "No"])
     dependents = st.sidebar.selectbox("Has Dependents?", ["Yes", "No"])
 
-    # Feature Scaling Function
     def build_input_df(m_charges, t_support, c_type):
         avg_cost = total_charges / max(tenure, 1)
         price_diff = m_charges - avg_cost
@@ -192,7 +194,7 @@ with tab1:
 
         return pd.DataFrame([data])
 
-    st.subheader("⚡ Real-Time Probability Assessment")
+    st.subheader("⚡ Real-Time Risk Assessment")
     
     if st.button("🚀 Calculate Churn Risk", use_container_width=True):
         input_df = build_input_df(monthly_charges, tech_support, contract)
@@ -212,7 +214,7 @@ with tab1:
                 st.info("Account is healthy and engaged.")
 
 # ==========================================
-# TAB 2: RETENTION SIMULATOR (NEW FEATURE)
+# TAB 2: RETENTION SIMULATOR
 # ==========================================
 with tab2:
     st.subheader("🎯 Interactive What-If Retention Strategy Simulator")
@@ -240,9 +242,9 @@ with tab2:
         st.metric(label="Simulated Churn Score After Offer", value=f"{sim_score:.1f}%", delta=f"-{risk_reduction:.1f}% Risk")
         
         if sim_score < 50.0:
-            st.success("🎉 This retention strategy successfully brings the customer into the SAFE zone!")
+            st.success("🎉 Strategy successfully brings customer into the SAFE retention zone!")
         else:
-            st.warning("⚡ Consider upgrading contract duration or offering a higher discount to lower risk further.")
+            st.warning("⚡ Consider upgrading contract duration or offering a higher discount.")
 
 # ==========================================
 # TAB 3: BATCH PROCESSING
@@ -296,4 +298,4 @@ with tab4:
         st.scatter_chart(df_sample, x='tenure', y='MonthlyCharges', color='Churn')
 
 st.divider()
-st.markdown("<p style='text-align: center; color: #94a3b8;'>🔮 Enterprise Telco Churn Engine v3.0 | Cyber Glassmorphism Edition</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #64748b;'>🔮 Enterprise Telco Churn Engine v3.1 | Light Glass Edition</p>", unsafe_allow_html=True)
