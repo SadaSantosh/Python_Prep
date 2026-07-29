@@ -12,70 +12,74 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Advanced Custom CSS: Floating Sidebar + Background Image + Neon Glass
+# 2. Theme-Adaptive Custom CSS (Works Perfectly in Light & Dark Mode)
 st.markdown("""
 <style>
-    /* Full Page High-Tech Background Image with Dark Overlay */
+    /* Make the top header transparent so it doesn't create a white block */
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+
+    /* Theme-Aware Background with Ambient Glow */
     .stApp {
-        background: linear-gradient(rgba(10, 15, 30, 0.85), rgba(10, 15, 30, 0.92)),
-                    url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
+        background-color: var(--background-color);
+        background-image: 
+            radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.12), transparent 30%),
+            radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.12), transparent 30%);
         background-attachment: fixed;
-        color: #f8fafc;
     }
     
-    /* FLOATING GLASS SIDEBAR */
+    /* FLOATING ADAPTIVE SIDEBAR */
     section[data-testid="stSidebar"] {
-        background: rgba(15, 23, 42, 0.65) !important;
+        background-color: var(--secondary-background-color) !important;
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(128, 128, 128, 0.2) !important;
         border-radius: 20px !important;
         margin: 15px !important;
         height: calc(100vh - 30px) !important;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
     }
 
     /* GLASS CARDS FOR CONTENT & METRICS */
-    div[data-testid="stMetric"], .glass-container {
-        background: rgba(255, 255, 255, 0.04) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    div[data-testid="stMetric"], .stAlert {
+        background-color: var(--secondary-background-color) !important;
+        border: 1px solid rgba(128, 128, 128, 0.2) !important;
         border-radius: 18px !important;
         padding: 24px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
         transition: all 0.3s ease-in-out !important;
     }
     
     div[data-testid="stMetric"]:hover {
-        transform: translateY(-5px) scale(1.01) !important;
-        border-color: rgba(99, 102, 241, 0.6) !important;
-        box-shadow: 0 12px 40px rgba(99, 102, 241, 0.25) !important;
+        transform: translateY(-5px) !important;
+        border-color: var(--primary-color) !important;
     }
 
-    /* MODERN NEON TABS */
+    /* MODERN ADAPTIVE TABS */
     .stTabs [data-baseweb="tab-list"] {
         gap: 15px;
-        background: rgba(255, 255, 255, 0.03);
         padding: 10px;
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: transparent;
     }
 
     .stTabs [data-baseweb="tab"] {
         border-radius: 10px;
-        color: #94a3b8;
+        color: var(--text-color);
+        background-color: var(--secondary-background-color);
+        border: 1px solid rgba(128, 128, 128, 0.2);
         font-weight: 700;
         padding: 12px 24px;
         transition: all 0.3s ease;
+        opacity: 0.8;
     }
 
     .stTabs [aria-selected="true"] {
         background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
         color: #ffffff !important;
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        border: none !important;
+        opacity: 1;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
     }
 
     /* GLOWING GRADIENT BUTTONS */
@@ -86,34 +90,24 @@ st.markdown("""
         border: none !important;
         border-radius: 12px !important;
         padding: 14px 28px !important;
-        box-shadow: 0 4px 25px rgba(217, 70, 239, 0.35) !important;
         transition: all 0.3s ease !important;
     }
     
     .stButton > button:hover {
         transform: scale(1.02) !important;
-        box-shadow: 0 8px 35px rgba(217, 70, 239, 0.6) !important;
+        box-shadow: 0 8px 25px rgba(217, 70, 239, 0.4) !important;
     }
 
     /* TYPOGRAPHY */
-    h1 {
-        background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800 !important;
-    }
-    
-    /* CUSTOM ALERTS */
-    .stAlert {
-        border-radius: 12px !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
+    h1, h2, h3, p, span {
+        color: var(--text-color);
     }
 </style>
 """, unsafe_allow_html=True)
 
 # 3. Header Title
 st.title("⚡ Enterprise Telco Churn AI Command Center")
-st.markdown("<p style='color: #cbd5e1; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
+st.markdown("<p style='color: var(--text-color); opacity: 0.7; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
 st.divider()
 
 # 4. Load Models Safely
@@ -165,11 +159,9 @@ with tab1:
     partner = st.sidebar.selectbox("Has Partner?", ["Yes", "No"])
     dependents = st.sidebar.selectbox("Has Dependents?", ["Yes", "No"])
 
-    # Feature Scaling Function
     def build_input_df(m_charges, t_support, c_type):
         avg_cost = total_charges / max(tenure, 1)
         price_diff = m_charges - avg_cost
-
         num_df = pd.DataFrame([[tenure, m_charges, total_charges, avg_cost, price_diff]], 
                               columns=['tenure', 'MonthlyCharges', 'TotalCharges', 'Avg_Monthly_Cost', 'Monthly_Price_Diff'])
         scaled_num = scaler.transform(num_df)[0]
@@ -180,22 +172,15 @@ with tab1:
         data['TotalCharges'] = scaled_num[2]
         data['Avg_Monthly_Cost'] = scaled_num[3]
         data['Monthly_Price_Diff'] = scaled_num[4]
-
         data['PaperlessBilling'] = 1 if paperless == "Yes" else 0
         data['Partner'] = 1 if partner == "Yes" else 0
         data['Dependents'] = 1 if dependents == "Yes" else 0
 
-        if f"Contract_{c_type}" in data:
-            data[f"Contract_{c_type}"] = 1
-        if f"InternetService_{internet_service}" in data:
-            data[f"InternetService_{internet_service}"] = 1
-        if f"PaymentMethod_{payment_method}" in data:
-            data[f"PaymentMethod_{payment_method}"] = 1
-        if f"TechSupport_{t_support}" in data:
-            data[f"TechSupport_{t_support}"] = 1
-        if f"OnlineSecurity_{online_security}" in data:
-            data[f"OnlineSecurity_{online_security}"] = 1
-
+        if f"Contract_{c_type}" in data: data[f"Contract_{c_type}"] = 1
+        if f"InternetService_{internet_service}" in data: data[f"InternetService_{internet_service}"] = 1
+        if f"PaymentMethod_{payment_method}" in data: data[f"PaymentMethod_{payment_method}"] = 1
+        if f"TechSupport_{t_support}" in data: data[f"TechSupport_{t_support}"] = 1
+        if f"OnlineSecurity_{online_security}" in data: data[f"OnlineSecurity_{online_security}"] = 1
         return pd.DataFrame([data])
 
     st.subheader("⚡ Real-Time Probability Assessment")
@@ -203,21 +188,22 @@ with tab1:
     if st.button("🚀 Calculate Churn Risk", use_container_width=True):
         input_df = build_input_df(monthly_charges, tech_support, contract)
         churn_prob = model.predict_proba(input_df)[0][1] * 100
+        ltv_at_risk = monthly_charges * 12
 
         col1, col2 = st.columns([1, 2])
         with col1:
             st.metric(label="Predicted Churn Score", value=f"{churn_prob:.1f}%")
+            st.metric(label="12-Month Revenue at Risk", value=f"${ltv_at_risk:,.2f}")
             st.progress(int(churn_prob))
             
         with col2:
             st.write("### 🤖 AI Risk Analysis Report")
-            # Dynamic natural language report generation
             reasons = []
             if contract == "Month-to-month": reasons.append("- **High-Risk Contract:** Month-to-month billing creates low switching friction.")
             if internet_service == "Fiber optic": reasons.append("- **Service Type:** Fiber optic customers historically show higher churn volatility.")
             if tech_support == "No": reasons.append("- **Lack of Support:** Customer has no tech support, reducing overall satisfaction.")
             if tenure < 12: reasons.append("- **New Customer:** Account is less than a year old, a critical drop-off period.")
-            if payment_method == "Electronic check": reasons.append("- **Payment Method:** Electronic check users show higher default/churn rates.")
+            if payment_method == "Electronic check": reasons.append("- **Payment Method:** Electronic check users show higher default rates.")
             
             if churn_prob >= 50.0:
                 st.error("⚠️ **HIGH RETENTION RISK**")
@@ -227,6 +213,9 @@ with tab1:
             else:
                 st.success("✅ **LOW RETENTION RISK**")
                 st.write("Customer exhibits strong loyalty indicators. Existing plan is optimal.")
+                
+            report_text = f"AI RISK ANALYSIS REPORT\n----------------------\nChurn Probability: {churn_prob:.1f}%\n12-Month LTV at Risk: ${ltv_at_risk:,.2f}\n\nPrimary Risk Drivers:\n" + "\n".join(reasons)
+            st.download_button("📥 Export AI Report (.txt)", data=report_text, file_name="AI_Churn_Report.txt")
 
 # ==========================================
 # TAB 2: RETENTION SIMULATOR
@@ -236,7 +225,6 @@ with tab2:
     st.write("Simulate offer strategies to see how much they lower the customer's churn risk score!")
     
     col_sim1, col_sim2 = st.columns(2)
-    
     with col_sim1:
         discount = st.slider("Offer Monthly Discount ($)", 0, int(monthly_charges), 10)
         upgrade_support = st.checkbox("Add Free Tech Support Package", value=True)
@@ -256,10 +244,8 @@ with tab2:
         st.metric(label="Original Churn Score", value=f"{base_score:.1f}%")
         st.metric(label="Simulated Score After Offer", value=f"{sim_score:.1f}%", delta=f"-{risk_reduction:.1f}% Risk")
         
-        if sim_score < 50.0:
-            st.success("🎉 This retention strategy successfully brings the customer into the SAFE zone!")
-        else:
-            st.warning("⚡ Consider upgrading contract duration or offering a higher discount to lower risk further.")
+        if sim_score < 50.0: st.success("🎉 This retention strategy successfully brings the customer into the SAFE zone!")
+        else: st.warning("⚡ Consider upgrading contract duration or offering a higher discount to lower risk further.")
 
 # ==========================================
 # TAB 3: BATCH FINANCIAL RISK
@@ -279,11 +265,9 @@ with tab3:
             result_df['Churn_Probability_%'] = np.round(batch_probs[:len(raw_batch)], 2)
             result_df['Risk_Level'] = np.where(result_df['Churn_Probability_%'] >= 50.0, 'HIGH RISK', 'LOW RISK')
             
-            # Feature 2: Calculate Financial Impact (Assuming MonthlyCharges column exists in uploaded CSV)
             if 'MonthlyCharges' in result_df.columns:
                 high_risk_users = result_df[result_df['Risk_Level'] == 'HIGH RISK']
-                monthly_revenue_at_risk = high_risk_users['MonthlyCharges'].sum()
-                annual_revenue_at_risk = monthly_revenue_at_risk * 12
+                annual_revenue_at_risk = high_risk_users['MonthlyCharges'].sum() * 12
                 
                 col_fin1, col_fin2, col_fin3 = st.columns(3)
                 col_fin1.metric("Total Customers Scored", len(result_df))
@@ -291,15 +275,8 @@ with tab3:
                 col_fin3.metric("Annual Revenue at Risk", f"${annual_revenue_at_risk:,.2f}", delta="-High Financial Threat", delta_color="inverse")
             
             st.dataframe(result_df.head(10))
-            
             csv_data = result_df.to_csv(index=False).encode('utf-8')
-            st.download_button(
-                label="📥 Download Scored Financial Results",
-                data=csv_data,
-                file_name="churn_financial_batch_scored.csv",
-                mime="text/csv",
-                use_container_width=True
-            )
+            st.download_button("📥 Download Scored Financial Results", data=csv_data, file_name="churn_financial_batch_scored.csv", mime="text/csv", use_container_width=True)
 
 # ==========================================
 # TAB 4: MODEL ANALYTICS
@@ -307,19 +284,24 @@ with tab3:
 with tab4:
     st.subheader("📊 Model Diagnostics & Feature Drivers")
     col1, col2 = st.columns(2)
-    
     with col1:
         st.write("### 🔑 Top Feature Importances")
         if hasattr(model, 'feature_importances_'):
-            imp_df = pd.DataFrame({
-                'Feature': feature_cols,
-                'Importance': model.feature_importances_
-            }).sort_values(by='Importance', ascending=False).head(10)
+            imp_df = pd.DataFrame({'Feature': feature_cols, 'Importance': model.feature_importances_}).sort_values(by='Importance', ascending=False).head(10)
             st.bar_chart(imp_df.set_index('Feature'))
-            
     with col2:
         st.write("### 📈 Customer Scatter Distribution")
         st.scatter_chart(df_sample, x='tenure', y='MonthlyCharges', color='Churn')
 
+# ==========================================
+# FOOTER / CREATOR BRANDING
+# ==========================================
 st.divider()
-st.markdown("<p style='text-align: center; color: #94a3b8;'>🔮 Enterprise Telco Churn Engine v3.5 | Cyber Glassmorphism + AI Features</p>", unsafe_allow_html=True)
+st.markdown("""
+<div style='text-align: center; padding: 20px;'>
+    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v5.0 | Adaptive Theme Edition</p>
+    <p style='font-size: 1.1rem; font-weight: 700; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: -10px;'>
+        🚀 Developed by Sada Santosh Kalmath
+    </p>
+</div>
+""", unsafe_allow_html=True)
