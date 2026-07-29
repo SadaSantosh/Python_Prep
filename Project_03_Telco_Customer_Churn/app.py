@@ -12,74 +12,75 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Theme-Adaptive Custom CSS (Works Perfectly in Light & Dark Mode)
+# 2. Advanced Custom CSS: Floating Sidebar + Background Image + Neon Glass
 st.markdown("""
 <style>
-    /* Make the top header transparent so it doesn't create a white block */
+    /* FIX: Make the top header transparent so it doesn't create a white block */
     [data-testid="stHeader"] {
         background-color: transparent !important;
     }
 
-    /* Theme-Aware Background with Ambient Glow */
+    /* Full Page High-Tech Background Image with Dark Overlay */
     .stApp {
-        background-color: var(--background-color);
-        background-image: 
-            radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.12), transparent 30%),
-            radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.12), transparent 30%);
-        background-attachment: fixed;
+        background: linear-gradient(rgba(10, 15, 30, 0.85), rgba(10, 15, 30, 0.92)),
+                    url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
+        color: #f8fafc !important;
     }
     
-    /* FLOATING ADAPTIVE SIDEBAR */
+    /* FLOATING GLASS SIDEBAR */
     section[data-testid="stSidebar"] {
-        background-color: var(--secondary-background-color) !important;
+        background: rgba(15, 23, 42, 0.65) !important;
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(128, 128, 128, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
         border-radius: 20px !important;
         margin: 15px !important;
         height: calc(100vh - 30px) !important;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
     }
 
     /* GLASS CARDS FOR CONTENT & METRICS */
     div[data-testid="stMetric"], .stAlert {
-        background-color: var(--secondary-background-color) !important;
-        border: 1px solid rgba(128, 128, 128, 0.2) !important;
+        background: rgba(255, 255, 255, 0.04) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
         border-radius: 18px !important;
         padding: 24px !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
         transition: all 0.3s ease-in-out !important;
     }
     
     div[data-testid="stMetric"]:hover {
-        transform: translateY(-5px) !important;
-        border-color: var(--primary-color) !important;
+        transform: translateY(-5px) scale(1.01) !important;
+        border-color: rgba(99, 102, 241, 0.6) !important;
+        box-shadow: 0 12px 40px rgba(99, 102, 241, 0.25) !important;
     }
 
-    /* MODERN ADAPTIVE TABS */
+    /* MODERN NEON TABS */
     .stTabs [data-baseweb="tab-list"] {
         gap: 15px;
+        background: rgba(255, 255, 255, 0.03);
         padding: 10px;
-        background-color: transparent;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .stTabs [data-baseweb="tab"] {
         border-radius: 10px;
-        color: var(--text-color);
-        background-color: var(--secondary-background-color);
-        border: 1px solid rgba(128, 128, 128, 0.2);
+        color: #94a3b8;
         font-weight: 700;
         padding: 12px 24px;
         transition: all 0.3s ease;
-        opacity: 0.8;
     }
 
     .stTabs [aria-selected="true"] {
         background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
         color: #ffffff !important;
-        border: none !important;
-        opacity: 1;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
     }
 
     /* GLOWING GRADIENT BUTTONS */
@@ -90,24 +91,28 @@ st.markdown("""
         border: none !important;
         border-radius: 12px !important;
         padding: 14px 28px !important;
+        box-shadow: 0 4px 25px rgba(217, 70, 239, 0.35) !important;
         transition: all 0.3s ease !important;
     }
     
     .stButton > button:hover {
         transform: scale(1.02) !important;
-        box-shadow: 0 8px 25px rgba(217, 70, 239, 0.4) !important;
+        box-shadow: 0 8px 35px rgba(217, 70, 239, 0.6) !important;
     }
 
     /* TYPOGRAPHY */
-    h1, h2, h3, p, span {
-        color: var(--text-color);
+    h1 {
+        background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800 !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # 3. Header Title
 st.title("⚡ Enterprise Telco Churn AI Command Center")
-st.markdown("<p style='color: var(--text-color); opacity: 0.7; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
+st.markdown("<p style='color: #cbd5e1; font-size: 1.1rem; margin-bottom: 25px;'>Next-Gen Retention Analytics Platform powered by XGBoost & SMOTE Pipeline</p>", unsafe_allow_html=True)
 st.divider()
 
 # 4. Load Models Safely
@@ -188,7 +193,7 @@ with tab1:
     if st.button("🚀 Calculate Churn Risk", use_container_width=True):
         input_df = build_input_df(monthly_charges, tech_support, contract)
         churn_prob = model.predict_proba(input_df)[0][1] * 100
-        ltv_at_risk = monthly_charges * 12
+        ltv_at_risk = monthly_charges * 12 
 
         col1, col2 = st.columns([1, 2])
         with col1:
@@ -299,8 +304,8 @@ with tab4:
 st.divider()
 st.markdown("""
 <div style='text-align: center; padding: 20px;'>
-    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v5.0 | Adaptive Theme Edition</p>
-    <p style='font-size: 1.1rem; font-weight: 700; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: -10px;'>
+    <p style='color: #cbd5e1; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.0 | Cyber Glass Edition</p>
+    <p style='font-size: 1.1rem; font-weight: 700; color: #a855f7; margin-top: -10px;'>
         🚀 Developed by Sada Santosh Kalmath
     </p>
 </div>
