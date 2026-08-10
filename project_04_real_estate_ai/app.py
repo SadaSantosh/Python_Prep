@@ -47,9 +47,11 @@ add_bg_image()
 # 3. Load Model & Scaler Artifacts
 @st.cache_resource
 def load_artifacts():
+    import os
+    base_dir = os.path.dirname(os.path.abspath(__file__))
     try:
-        model = joblib.load('real_estate_model.pkl')
-        scaler = joblib.load('real_estate_scaler.pkl')
+        model = joblib.load(os.path.join(base_dir, 'real_estate_model.pkl'))
+        scaler = joblib.load(os.path.join(base_dir, 'real_estate_scaler.pkl'))
         return model, scaler
     except FileNotFoundError:
         st.error("Error: Artifacts not found. Please run 'train_model.py' first inside the 'real_estate_ai' folder.")
@@ -57,13 +59,37 @@ def load_artifacts():
 
 model, scaler = load_artifacts()
 
-# 4. Premium Custom CSS
+# 4. Premium Custom CSS (Glassmorphism Overhaul)
 st.markdown("""
     <style>
+    /* Master Glass Pane for Main Content */
+    .block-container {
+        background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+        backdrop-filter: blur(25px) !important;
+        -webkit-backdrop-filter: blur(25px) !important;
+        border-radius: 24px !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
+        padding: 3rem 4rem !important;
+        margin-top: 3rem !important;
+        margin-bottom: 3rem !important;
+        max-width: 90% !important;
+    }
+
+    /* Transparent Header */
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+
+    /* Remove default app background */
+    [data-testid="stAppViewContainer"] {
+        background-color: transparent !important;
+    }
+
     /* Hero Section Header */
     .hero-container {
         background: linear-gradient(135deg, rgba(30, 27, 75, 0.7) 0%, rgba(49, 46, 129, 0.7) 100%);
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(25px) !important;
         padding: 30px;
         border-radius: 20px;
         border: 1px solid rgba(99, 102, 241, 0.3);
@@ -96,9 +122,10 @@ st.markdown("""
         font-style: italic;
     }
     
-    /* Input Box styling (Inputs turn dark) */
-    div[data-baseweb="input"], div[data-baseweb="select"] {
+    /* Input Box styling */
+    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="textarea"] {
         background-color: rgba(30, 41, 59, 0.6) !important;
+        backdrop-filter: blur(10px) !important;
         border: 1px solid rgba(129, 140, 248, 0.3) !important;
         border-radius: 8px !important;
         color: #f8fafc !important;
@@ -108,15 +135,45 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Tabs styling (Tabs turn purple) */
-    button[data-baseweb="tab"] {
-        color: #94a3b8 !important;
-        font-weight: 600;
+    /* Tabs styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 15px;
+        background: transparent;
+        padding: 10px 0px;
     }
-    button[aria-selected="true"] {
-        color: #818cf8 !important;
-        background-color: rgba(99, 102, 241, 0.1) !important;
-        border-radius: 8px !important;
+
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        color: #94a3b8 !important;
+        background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        font-weight: 700;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+    }
+
+    /* GLOWING GRADIENT BUTTONS */
+    .stButton > button {
+        background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%) !important;
+        color: white !important;
+        font-weight: 700 !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 12px 24px !important;
+        box-shadow: 0 4px 20px rgba(217, 70, 239, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .stButton > button:hover {
+        transform: scale(1.03) !important;
+        box-shadow: 0 8px 30px rgba(217, 70, 239, 0.5) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -150,6 +207,13 @@ with st.sidebar:
     elif "EUR" in currency_symbol:
         multiplier = 0.92
         curr_prefix = "€"
+
+    st.divider()
+
+    st.markdown("### 📈 Market Trend Adjuster")
+    st.write("Simulate macro-economic impacts on property values.")
+    market_trend_percent = st.slider("Expected Market Growth/Decline (%)", min_value=-25.0, max_value=25.0, value=0.0, step=0.5, format="%.1f%%")
+    multiplier = multiplier * (1 + (market_trend_percent / 100))
     
     st.divider()
     st.success(f"**Developer Identification Verified**\n\n©️ Sada Santosh Kalmath Analytics")
