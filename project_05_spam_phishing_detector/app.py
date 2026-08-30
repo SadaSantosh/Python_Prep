@@ -13,6 +13,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+if 'spam_history' not in st.session_state:
+    st.session_state['spam_history'] = pd.DataFrame(columns=['Text Snippet', 'Prediction', 'Spam Confidence (%)'])
+
 # 2. Path Setup & Artifact Loading
 BASE_DIR = Path(__file__).parent
 
@@ -65,6 +68,30 @@ def analyze_urls_in_text(raw_text):
 # 5. Cyber Glassmorphism & High-Tech Animations CSS
 st.markdown("""
     <style>
+    /* Master Glass Pane for Main Content */
+    .block-container {
+        background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+        backdrop-filter: blur(25px) !important;
+        -webkit-backdrop-filter: blur(25px) !important;
+        border-radius: 24px !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
+        padding: 3rem 4rem !important;
+        margin-top: 3rem !important;
+        margin-bottom: 3rem !important;
+        max-width: 90% !important;
+    }
+
+    /* Transparent Header */
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+
+    /* Remove default app background */
+    [data-testid="stAppViewContainer"] {
+        background-color: transparent !important;
+    }
+
     /* Dark Cyber Network Background Overlay */
     .stApp {
         background-image: linear-gradient(rgba(10, 15, 30, 0.88), rgba(10, 15, 30, 0.95)), 
@@ -85,7 +112,7 @@ st.markdown("""
     /* Hero Header Banner with Cyber Glow */
     .hero-box {
         background: rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(25px) !important;
         padding: 35px;
         border-radius: 24px;
         border: 1px solid rgba(56, 189, 248, 0.4);
@@ -131,9 +158,9 @@ st.markdown("""
     }
 
     /* Glass Input Area */
-    div[data-baseweb="textarea"] {
+    div[data-baseweb="input"], div[data-baseweb="select"], div[data-baseweb="textarea"] {
         background: rgba(15, 23, 42, 0.6) !important;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px) !important;
         border: 1px solid rgba(56, 189, 248, 0.3) !important;
         border-radius: 12px !important;
         color: #f8fafc !important;
@@ -161,15 +188,44 @@ st.markdown("""
     }
     
     /* Styled Tabs */
-    button[data-baseweb="tab"] {
-        color: #94a3b8 !important;
-        font-size: 1.05rem;
-        font-weight: 600;
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 15px;
+        background: transparent;
+        padding: 10px 0px;
     }
-    button[aria-selected="true"] {
-        color: #38bdf8 !important;
-        background-color: rgba(56, 189, 248, 0.12) !important;
+
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        color: #94a3b8 !important;
+        background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        font-weight: 700;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4) !important;
+    }
+
+    /* GLOWING GRADIENT BUTTONS */
+    .stButton > button {
+        background: linear-gradient(135deg, #38bdf8 0%, #c084fc 100%) !important;
+        color: white !important;
+        font-weight: 700 !important;
+        border: none !important;
         border-radius: 10px !important;
+        padding: 12px 24px !important;
+        box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .stButton > button:hover {
+        transform: scale(1.03) !important;
+        box-shadow: 0 8px 30px rgba(56, 189, 248, 0.5) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -268,6 +324,18 @@ with tab1:
                         st.write(f"  * 🚩 {flag}")
             else:
                 st.write("ℹ️ No hyperlinks detected in the message payload.")
+
+            # Log prediction to session history
+            short_text = user_input[:50] + "..." if len(user_input) > 50 else user_input
+            new_log = pd.DataFrame([{'Text Snippet': short_text, 'Prediction': prediction.upper(), 'Spam Confidence (%)': round(spam_prob, 2)}])
+            st.session_state['spam_history'] = pd.concat([new_log, st.session_state['spam_history']], ignore_index=True)
+
+    st.divider()
+    with st.expander("📜 View Scan History Logs"):
+        st.dataframe(st.session_state['spam_history'], use_container_width=True)
+        if not st.session_state['spam_history'].empty:
+            csv_hist = st.session_state['spam_history'].to_csv(index=False).encode('utf-8')
+            st.download_button("📥 Export History (CSV)", data=csv_hist, file_name="Spam_Scan_History.csv", mime="text/csv")
 
 # ==========================================
 # TAB 2: BULK CSV THREAT AUDITOR

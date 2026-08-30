@@ -12,6 +12,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Session State for History
+if 'churn_history' not in st.session_state:
+    st.session_state['churn_history'] = pd.DataFrame(columns=['Tenure', 'Monthly Charges', 'Contract', 'Churn Prob (%)', 'Risk LTV'])
+
 # 2. ADAPTIVE CSS: Master Glass Pane Layout
 st.markdown("""
 <style>
@@ -217,7 +221,9 @@ with tab1:
         if f"PaymentMethod_{payment_method}" in data: data[f"PaymentMethod_{payment_method}"] = 1
         if f"TechSupport_{t_support}" in data: data[f"TechSupport_{t_support}"] = 1
         if f"OnlineSecurity_{online_security}" in data: data[f"OnlineSecurity_{online_security}"] = 1
-        return pd.DataFrame([data])
+
+        # Ensure exact column order and presence for XGBoost
+        return pd.DataFrame([data])[feature_cols]
 
     st.subheader("⚡ Real-Time Probability Assessment")
     
@@ -252,6 +258,20 @@ with tab1:
                 
             report_text = f"AI RISK ANALYSIS REPORT\n----------------------\nChurn Probability: {churn_prob:.1f}%\n12-Month LTV at Risk: ${ltv_at_risk:,.2f}\n\nPrimary Risk Drivers:\n" + "\n".join(reasons)
             st.download_button("📥 Export AI Report (.txt)", data=report_text, file_name="AI_Churn_Report.txt")
+
+        # Update session state with new prediction log
+        new_log = pd.DataFrame([{
+            'Tenure': tenure, 'Monthly Charges': monthly_charges, 'Contract': contract,
+            'Churn Prob (%)': round(churn_prob, 2), 'Risk LTV': round(ltv_at_risk, 2)
+        }])
+        st.session_state['churn_history'] = pd.concat([new_log, st.session_state['churn_history']], ignore_index=True)
+
+    st.divider()
+    with st.expander("📜 View Prediction History Logs"):
+        st.dataframe(st.session_state['churn_history'], use_container_width=True)
+        if not st.session_state['churn_history'].empty:
+            csv_hist = st.session_state['churn_history'].to_csv(index=False).encode('utf-8')
+            st.download_button("📥 Export History (CSV)", data=csv_hist, file_name="Churn_Prediction_History.csv", mime="text/csv")
 
 # ==========================================
 # TAB 2: RETENTION SIMULATOR
