@@ -20,9 +20,11 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* Base Background Image */
+    /* Base Background Image with a readable global wash */
     .stApp {
-        background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop') !important;
+        background-image:
+            linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.35)),
+            url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop') !important;
         background-size: cover !important;
         background-position: center !important;
         background-attachment: fixed !important;
@@ -36,34 +38,52 @@ st.markdown("""
     /* THE MAGIC FIX: Master Glass Pane for Main Content */
     /* This creates a solid, frosted backing behind ALL text so it is readable in Light AND Dark mode */
     .block-container {
-        background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+        position: relative !important;
+        background-color: rgba(15, 23, 42, 0.72) !important;
         backdrop-filter: blur(25px) !important;
         -webkit-backdrop-filter: blur(25px) !important;
         border-radius: 24px !important;
-        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        border: 1px solid rgba(148, 163, 184, 0.25) !important;
         box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
         padding: 3rem 4rem !important;
         margin-top: 3rem !important;
         margin-bottom: 3rem !important;
-        max-width: 90% !important; /* Keeps the glass pane centered with the background showing on edges */
+        max-width: 95% !important; /* Slightly wider so the dashboard remains spacious without losing the glass effect */
     }
     
     /* ADAPTIVE FLOATING SIDEBAR */
     section[data-testid="stSidebar"] {
-        background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+        background-color: rgba(15, 23, 42, 0.7) !important;
         backdrop-filter: blur(25px) !important;
         -webkit-backdrop-filter: blur(25px) !important;
-        border-right: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        border-right: 1px solid rgba(148, 163, 184, 0.25) !important;
     }
 
     /* ADAPTIVE GLASS CARDS */
     div[data-testid="stMetric"], .stAlert {
-        background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
-        border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent) !important;
+        background-color: rgba(30, 41, 59, 0.68) !important;
+        border: 1px solid rgba(148, 163, 184, 0.2) !important;
         border-radius: 16px !important;
         padding: 20px !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
         transition: transform 0.3s ease, border-color 0.3s ease !important;
+    }
+
+    @supports (background: color-mix(in srgb, var(--background-color) 85%, transparent)) {
+        .block-container {
+            background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+            border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        }
+
+        section[data-testid="stSidebar"] {
+            background-color: color-mix(in srgb, var(--background-color) 85%, transparent) !important;
+            border-right: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        }
+
+        div[data-testid="stMetric"], .stAlert {
+            background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
+            border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent) !important;
+        }
     }
     
     div[data-testid="stMetric"]:hover {
@@ -81,11 +101,18 @@ st.markdown("""
     .stTabs [data-baseweb="tab"] {
         border-radius: 8px;
         color: var(--text-color) !important;
-        background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
-        border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        background-color: rgba(30, 41, 59, 0.62) !important;
+        border: 1px solid rgba(148, 163, 184, 0.2) !important;
         font-weight: 700;
         padding: 10px 20px;
         transition: all 0.3s ease;
+    }
+
+    @supports (background: color-mix(in srgb, var(--secondary-background-color) 60%, transparent)) {
+        .stTabs [data-baseweb="tab"] {
+            background-color: color-mix(in srgb, var(--secondary-background-color) 60%, transparent) !important;
+            border: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+        }
     }
 
     .stTabs [aria-selected="true"] {
@@ -308,7 +335,7 @@ with tab4:
 st.divider()
 st.markdown("""
 <div style='text-align: center; padding: 20px;'>
-    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.1 | Master Glass Edition</p>
+    <p style='color: var(--text-color); opacity: 0.6; font-size: 0.9rem;'>🔮 Enterprise Telco Churn Engine v6.2 | Master Glass Edition</p>
     <p style='font-size: 1.1rem; font-weight: 700; color: #a855f7; margin-top: -10px;'>
         🚀 Developed by Sada Santosh Kalmath
     </p>
