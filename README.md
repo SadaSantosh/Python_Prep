@@ -66,7 +66,8 @@ Customer churn poses a significant revenue threat in telecommunications. This pr
 To clone and run any of these projects locally on your computer:
 
 1. **Clone the Repository:**
+
    ```bash
-   git clone [https://github.com/SadaSantosh/Python_Prep.git](https://github.com/SadaSantosh/Python_Prep.git)
+   git clone https://github.com/SadaSantosh/Python_Prep.git
    cd Python_Prep
    ```
