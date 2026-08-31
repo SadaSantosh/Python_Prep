@@ -13,6 +13,8 @@ Welcome to my machine learning portfolio! This repository contains end-to-end da
 | **01. Student Performance Classifier** | Education Analytics        | Python, Scikit-Learn, Decision Trees | Completed                                                    |
 | **02. Corporate Employee Analytics**   | HR & Workforce Analytics   | Pandas, Seaborn, Attrition EDA       | Completed                                                    |
 | **03. Telco Customer Churn Engine**    | Telecom Customer Retention | XGBoost, SMOTE, Streamlit Cloud      | 🚀 [Live App](https://sadasantosh-telco-churn.streamlit.app) |
+| **04. Real Estate AI (ValuaAI)**       | Real Estate Valuation      | Random Forest, Plotly, Streamlit     | Completed                                                    |
+| **05. Spam & Phishing Detector**      | Cybersecurity / NLP        | TF-IDF, Naive Bayes, Streamlit       | Completed                                                    |
 
 ---
 
@@ -57,7 +59,36 @@ Customer churn poses a significant revenue threat in telecommunications. This pr
 - **Imbalance Handling:** Applied **SMOTE (Synthetic Minority Over-sampling Technique)** to train balanced models on imbalanced churn data.
 - **Model Pipeline:** Trained an **XGBoost Classifier** optimized for high-recall customer risk detection.
 - **Deployment:** Deployed an interactive frontend using **Streamlit** on **Streamlit Community Cloud**.
+- **UI Design:** **Liquid Glass (Glassmorphism)** frosted-glass interface with blur effects, semi-transparent cards, and gradient accents.
 - **Live App Link:** [https://sadasantosh-telco-churn.streamlit.app](https://sadasantosh-telco-churn.streamlit.app)
+
+---
+
+## 🏡 Project 04: ValuaAI — Real Estate Price Estimator
+
+### 📌 Project 04 Problem Statement
+
+A machine learning-powered real estate price estimation engine that enables property valuation with ROI simulation, batch portfolio analysis, and geospatial mapping.
+
+### 🛠️ Project 04 Key Technical Highlights
+
+- **Model:** Random Forest Regression (R² ≈ 98.35%)
+- **Features:** Single property inference, renovation simulator, bulk CSV valuation, interactive map visualization.
+- **UI Design:** **Liquid Glass (Glassmorphism)** frosted-glass interface with blur effects, semi-transparent cards, and gradient accents.
+
+---
+
+## 🛡️ Project 05: PhishShield — Spam & Phishing Detector
+
+### 📌 Project 05 Problem Statement
+
+An NLP-powered spam and phishing detection system that classifies messages using TF-IDF vectorization and rule-based URL heuristics for real-time threat analysis.
+
+### 🛠️ Project 05 Key Technical Highlights
+
+- **Model:** Multinomial Naive Bayes with TF-IDF features.
+- **Features:** Single message scanner, batch CSV audit, URL inspection (suspicious TLD, IP-based, length checks).
+- **UI Design:** **Liquid Glass (Glassmorphism)** frosted-glass interface with blur effects, semi-transparent cards, and gradient accents.
 
 ---
 
@@ -71,3 +102,32 @@ To clone and run any of these projects locally on your computer:
    git clone https://github.com/SadaSantosh/Python_Prep.git
    cd Python_Prep
    ```
+
+2. **Create a Virtual Environment & Install Dependencies:**
+
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate   # On Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. **Run a Streamlit App (Projects 03, 04, 05):**
+
+   ```bash
+   cd Project_03_Telco_Customer_Churn
+   streamlit run app.py
+   ```
+
+4. **Train Models from Scratch (optional):**
+
+   ```bash
+   cd Project_03_Telco_Customer_Churn
+   python data_preprocessing.py
+   python model_training.py
+   ```
+
+---
+
+## 👤 Author
+
+Engineered by **Sada Santosh Kalmath**

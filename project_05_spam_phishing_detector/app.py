@@ -18,23 +18,115 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-        .stApp { background-color: #fafafa; }
+        /* Liquid Glass — Glassmorphism UI */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        .stApp {
+            background: linear-gradient(135deg, #e8f0fe 0%, #f3e8ff 50%, #fce7f3 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .stApp::before {
+            content: '';
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(99,102,241,0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(236,72,153,0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .stApp > * { position: relative; z-index: 1; }
+
         [data-testid="stSidebar"] {
-            background-color: #ffffff;
-            border-right: 1px solid #e5e7eb;
+            background: rgba(255,255,255,0.55) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-right: 1px solid rgba(255,255,255,0.6) !important;
+            box-shadow: 4px 0 30px rgba(0,0,0,0.05) !important;
         }
-        h1, h2, h3 { color: #111827; font-weight: 600; }
+        [data-testid="stSidebar"] [data-testid="stMarkdown"] {
+            color: #1e1b4b !important;
+        }
+
+        h1, h2, h3 {
+            color: #1e1b4b !important;
+            font-weight: 600 !important;
+            letter-spacing: -0.02em !important;
+        }
+
+        /* Glass card metrics */
         div[data-testid="stMetric"] {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 16px;
+            background: rgba(255,255,255,0.6) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255,255,255,0.7) !important;
+            border-radius: 16px !important;
+            padding: 20px 24px !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
         }
+        div[data-testid="stMetric"]:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Glass button */
         .stButton > button {
-            background: #111827 !important;
+            background: linear-gradient(135deg, rgba(99,102,241,0.85), rgba(139,92,246,0.85)) !important;
             color: #ffffff !important;
-            border-radius: 6px !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+            border-radius: 12px !important;
+            font-weight: 500 !important;
+            padding: 10px 24px !important;
+            backdrop-filter: blur(8px) !important;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.3) !important;
+            transition: all 0.25s ease !important;
         }
+        .stButton > button:hover {
+            background: linear-gradient(135deg, rgba(79,70,229,0.95), rgba(124,58,237,0.95)) !important;
+            box-shadow: 0 6px 28px rgba(99,102,241,0.45) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        /* Glass tabs */
+        [data-baseweb="tab-list"] {
+            background: rgba(255,255,255,0.4) !important;
+            backdrop-filter: blur(12px) !important;
+            border-radius: 14px !important;
+            padding: 4px !important;
+            border: 1px solid rgba(255,255,255,0.6) !important;
+        }
+        [data-baseweb="tab"] { border-radius: 10px !important; font-weight: 500 !important; }
+        [aria-selected="true"] {
+            background: rgba(255,255,255,0.7) !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+        }
+
+        /* Glass input fields */
+        .stTextInput > div > div,
+        .stTextArea > div > div,
+        .stSelectbox > div > div {
+            background: rgba(255,255,255,0.5) !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255,255,255,0.7) !important;
+            border-radius: 10px !important;
+        }
+
+        .stDataFrame {
+            border-radius: 14px !important;
+            overflow: hidden !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.06) !important;
+            border: 1px solid rgba(255,255,255,0.6) !important;
+        }
+
+        .stAlert {
+            background: rgba(255,255,255,0.55) !important;
+            backdrop-filter: blur(12px) !important;
+            border-radius: 12px !important;
+            border: 1px solid rgba(255,255,255,0.6) !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important;
+        }
+
         .block-container { padding-top: 2rem; max-width: 1100px; }
     </style>
     """,

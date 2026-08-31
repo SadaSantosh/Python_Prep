@@ -23,6 +23,11 @@ cols_to_drop = [target_col]
 if "Employee_ID" in df.columns:
     cols_to_drop.append("Employee_ID")
 
+# Drop any remaining non-numeric columns that weren't encoded
+for col in df.drop(columns=cols_to_drop).columns:
+    if df[col].dtype == 'object':
+        cols_to_drop.append(col)
+
 X = df.drop(columns=cols_to_drop)  # Predictors (numbers only)
 y = df[target_col]                 # Target Class
 

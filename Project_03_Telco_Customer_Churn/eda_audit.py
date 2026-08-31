@@ -2,7 +2,10 @@ import pandas as pd
 
 print("🔍 DAY 11: Auditing Telco Dataset for Imbalance & Data Types...")
 
-df = pd.read_csv("project_03_telco_customer_churn/telco_churn.csv")
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+df = pd.read_csv(os.path.join(BASE_DIR, "telco_churn.csv"))
 
 # 1. Target Class Distribution Analysis
 churn_counts = df['Churn'].value_counts()

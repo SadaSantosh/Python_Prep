@@ -11,7 +11,7 @@ raw_data = {
 
 #2. Converting raw data into a structured Pandas DataFram (Rows & Columns)
 df = pd.DataFrame(raw_data)
-print("\nOur Sturctured Dataset:")
+print("\nOur Structured Dataset:")
 print(df)
 
 #3. Basic Data Analytics: Calculating the average hours spent by students per day

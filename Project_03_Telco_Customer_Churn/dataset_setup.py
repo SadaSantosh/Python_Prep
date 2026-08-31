@@ -10,7 +10,8 @@ url = "https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/maste
 df = pd.read_csv(url)
 
 # Define local save path
-save_path = "project_03_telco_customer_churn/telco_churn.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+save_path = os.path.join(BASE_DIR, "telco_churn.csv")
 df.to_csv(save_path, index=False)
 
 print(f"✅ Dataset successfully downloaded and saved to '{save_path}'!")
