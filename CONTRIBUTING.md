@@ -24,7 +24,7 @@ Python_Prep/
 │   └── requirements.txt         # Project-specific dependencies
 │
 ├── Project_03_Telco_Customer_Churn/              # Streamlit: Churn prediction engine
-│   ├── app.py                   # Streamlit frontend (Liquid Glass UI)
+│   ├── app.py                   # Streamlit frontend (Minimalist UI)
 │   ├── data_preprocessing.py    # Feature engineering & scaling
 │   ├── model_training.py        # SMOTE + XGBoost/RF/LR training
 │   ├── advanced_eval.py         # Model comparison & feature importance
@@ -35,14 +35,14 @@ Python_Prep/
 │   └── *.pkl, *.csv             # Model artifacts & data
 │
 ├── project_04_real_estate_ai/                    # Streamlit: Property valuation
-│   ├── app.py                   # Streamlit frontend (Liquid Glass UI)
+│   ├── app.py                   # Streamlit frontend (Minimalist UI)
 │   ├── train_model.py           # Random Forest regression training
 │   ├── requirements.txt         # Project-specific dependencies
 │   ├── .streamlit/config.toml   # Streamlit theme config
 │   └── *.pkl, *.json            # Model artifacts & metrics
 │
 ├── project_05_spam_phishing_detector/            # Streamlit: Spam/phishing detection
-│   ├── app.py                   # Streamlit frontend (Liquid Glass UI)
+│   ├── app.py                   # Streamlit frontend (Minimalist UI)
 │   ├── train_model.py           # TF-IDF + Naive Bayes training
 │   ├── requirements.txt         # Project-specific dependencies
 │   ├── .streamlit/config.toml   # Streamlit theme config
@@ -156,13 +156,13 @@ pytest tests/ --cov=. --cov-report=term-missing
 
 ---
 
-## 🎨 UI Design — Liquid Glass
+## 🎨 UI Design — Minimalist
 
-All Streamlit apps (Projects 03, 04, 05) use a **Liquid Glass (Glassmorphism)** UI with:
-- Frosted-glass sidebar with `backdrop-filter: blur(20px)`
-- Semi-transparent metric cards with hover lift effects
-- Gradient glass buttons (indigo → violet)
-- Ambient gradient background with radial color spots
+All Streamlit apps (Projects 03, 04, 05) use a **Minimalist** UI with:
+- Clean white sidebar with subtle border
+- White metric cards with soft shadows
+- Dark buttons with clean rounded corners
+- Subtle background image overlay
 - Inter font from Google Fonts
 
 Theme configs are in `.streamlit/config.toml` for each Streamlit project.

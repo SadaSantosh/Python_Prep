@@ -13,131 +13,86 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-LIQUID_GLASS_CSS = """
+MINIMAL_CSS = """
 <style>
-    /* Liquid Glass — Glassmorphism UI */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     .stApp {
-        background: linear-gradient(135deg, #e8f0fe 0%, #f3e8ff 50%, #fce7f3 100%);
+        background-color: #fafafa;
         font-family: 'Inter', sans-serif;
     }
     .stApp::before {
         content: '';
         position: fixed;
-        top: -50%; left: -50%;
-        width: 200%; height: 200%;
-        background: radial-gradient(circle at 30% 20%, rgba(99,102,241,0.08) 0%, transparent 50%),
-                    radial-gradient(circle at 70% 80%, rgba(236,72,153,0.06) 0%, transparent 50%);
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80') center/cover no-repeat;
+        opacity: 0.06;
         pointer-events: none;
         z-index: 0;
     }
     .stApp > * { position: relative; z-index: 1; }
 
     [data-testid="stSidebar"] {
-        background: rgba(255,255,255,0.55) !important;
-        backdrop-filter: blur(20px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-        border-right: 1px solid rgba(255,255,255,0.6) !important;
-        box-shadow: 4px 0 30px rgba(0,0,0,0.05) !important;
+        background: #ffffff !important;
+        border-right: 1px solid #e5e7eb !important;
     }
     [data-testid="stSidebar"] [data-testid="stMarkdown"] {
-        color: #1e1b4b !important;
+        color: #111827 !important;
     }
 
     h1, h2, h3 {
-        color: #1e1b4b !important;
+        color: #111827 !important;
         font-weight: 600 !important;
-        letter-spacing: -0.02em !important;
+        letter-spacing: -0.025em !important;
     }
     p, label, .stMarkdown { color: #374151 !important; }
 
-    /* Glass card metrics */
     div[data-testid="stMetric"] {
-        background: rgba(255,255,255,0.6) !important;
-        backdrop-filter: blur(16px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-        border: 1px solid rgba(255,255,255,0.7) !important;
-        border-radius: 16px !important;
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 12px !important;
         padding: 20px 24px !important;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8) !important;
-        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-    }
-    div[data-testid="stMetric"]:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
     }
 
-    /* Glass button */
     .stButton > button {
-        background: linear-gradient(135deg, rgba(99,102,241,0.85), rgba(139,92,246,0.85)) !important;
+        background: #111827 !important;
         color: #ffffff !important;
-        border: 1px solid rgba(255,255,255,0.3) !important;
-        border-radius: 12px !important;
+        border: none !important;
+        border-radius: 8px !important;
         font-weight: 500 !important;
         padding: 10px 24px !important;
-        backdrop-filter: blur(8px) !important;
-        box-shadow: 0 4px 20px rgba(99,102,241,0.3) !important;
-        transition: all 0.25s ease !important;
     }
     .stButton > button:hover {
-        background: linear-gradient(135deg, rgba(79,70,229,0.95), rgba(124,58,237,0.95)) !important;
-        box-shadow: 0 6px 28px rgba(99,102,241,0.45) !important;
-        transform: translateY(-1px) !important;
+        background: #1f2937 !important;
     }
 
-    /* Glass tabs */
     [data-baseweb="tab-list"] {
-        background: rgba(255,255,255,0.4) !important;
-        backdrop-filter: blur(12px) !important;
-        border-radius: 14px !important;
+        background: #f3f4f6 !important;
+        border-radius: 10px !important;
         padding: 4px !important;
-        border: 1px solid rgba(255,255,255,0.6) !important;
+        border: 1px solid #e5e7eb !important;
     }
     [data-baseweb="tab"] {
-        border-radius: 10px !important;
+        border-radius: 8px !important;
         font-weight: 500 !important;
     }
     [aria-selected="true"] {
-        background: rgba(255,255,255,0.7) !important;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+        background: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
     }
 
-    /* Glass input fields */
-    .stTextInput > div > div,
-    .stNumberInput > div > div,
-    .stSelectbox > div > div,
-    .stSlider > div > div {
-        background: rgba(255,255,255,0.5) !important;
-        backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(255,255,255,0.7) !important;
-        border-radius: 10px !important;
-    }
-
-    /* Glass DataFrame */
     .stDataFrame {
-        border-radius: 14px !important;
+        border-radius: 10px !important;
         overflow: hidden !important;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.06) !important;
-        border: 1px solid rgba(255,255,255,0.6) !important;
-    }
-
-    /* Success / Error / Warning glass banners */
-    .stAlert {
-        background: rgba(255,255,255,0.55) !important;
-        backdrop-filter: blur(12px) !important;
-        border-radius: 12px !important;
-        border: 1px solid rgba(255,255,255,0.6) !important;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important;
+        border: 1px solid #e5e7eb !important;
     }
 
     .block-container { padding-top: 2rem; max-width: 1100px; }
 </style>
 """
-st.markdown(LIQUID_GLASS_CSS, unsafe_allow_html=True)
-
-st.title("Telco Churn Predictor")
-st.caption("Retention risk scoring with a SMOTE-balanced classifier trained on Telco churn data.")
+st.markdown(MINIMAL_CSS, unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -192,6 +147,22 @@ except Exception as e:
     st.info("Run `data_preprocessing.py` and `model_training.py` in this folder first.")
     st.stop()
 
+st.title("Telco Churn Predictor")
+st.caption("Retention risk scoring with a SMOTE-balanced classifier trained on Telco churn data.")
+
+# Default sidebar values for cross-tab use
+default_tenure = 12
+default_monthly = 70.0
+default_total = 840.0
+default_contract = "Month-to-month"
+default_internet = "Fiber optic"
+default_payment = "Electronic check"
+default_support = "No"
+default_security = "No"
+default_paperless = "Yes"
+default_partner = "No"
+default_dependents = "No"
+
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Single Assessment",
     "Retention Simulator",
@@ -202,10 +173,10 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 ])
 
 with tab1:
-    st.sidebar.header("Customer profile")
+    st.sidebar.header("Customer Profile")
 
-    tenure = st.sidebar.slider("Tenure (months)", 1, 72, 12)
-    monthly_charges = st.sidebar.number_input("Monthly charges ($)", 18.0, 120.0, 70.0)
+    tenure = st.sidebar.slider("Tenure (months)", 1, 72, default_tenure)
+    monthly_charges = st.sidebar.number_input("Monthly charges ($)", 18.0, 120.0, default_monthly)
     total_charges = st.sidebar.number_input(
         "Total charges ($)", 18.0, 9000.0, float(tenure * monthly_charges)
     )
@@ -252,7 +223,7 @@ with tab1:
             data[f"OnlineSecurity_{online_security}"] = 1
         return pd.DataFrame([data])
 
-    st.subheader("Risk assessment")
+    st.subheader("Risk Assessment")
 
     if st.button("Calculate churn risk", use_container_width=True):
         input_df = build_input_df(monthly_charges, tech_support, contract)
@@ -294,7 +265,7 @@ with tab1:
             st.download_button("Download report", data=report_text, file_name="churn_report.txt")
 
 with tab2:
-    st.subheader("Retention simulator")
+    st.subheader("Retention Simulator")
     st.write("Adjust offers to estimate churn risk reduction.")
 
     col_sim1, col_sim2 = st.columns(2)
@@ -322,7 +293,7 @@ with tab2:
             st.warning("Consider a stronger retention offer.")
 
 with tab3:
-    st.subheader("Batch scoring")
+    st.subheader("Batch Scoring")
     st.write("Upload a Telco CSV (raw or preprocessed). Required raw columns include tenure and MonthlyCharges.")
     uploaded_file = st.file_uploader("Customer CSV", type=["csv"])
 
@@ -361,7 +332,7 @@ with tab3:
             )
 
 with tab4:
-    st.subheader("Model analytics")
+    st.subheader("Model Analytics")
     col1, col2 = st.columns(2)
     with col1:
         st.write("Top feature importances")
@@ -450,13 +421,13 @@ with tab6:
             st.metric("What-If Churn Probability", f"{wif_prob:.1f}%")
             st.progress(int(wif_prob))
             if wif_prob >= 70:
-                st.error("🔴 Critical risk — immediate action recommended")
+                st.error("Critical risk - immediate action recommended")
             elif wif_prob >= 50:
-                st.warning("🟡 Moderate risk — consider retention offer")
+                st.warning("Moderate risk - consider retention offer")
             elif wif_prob >= 30:
-                st.info("🟢 Low risk — monitor quarterly")
+                st.info("Low risk - monitor quarterly")
             else:
-                st.success("✅ Very low risk — healthy customer")
+                st.success("Very low risk - healthy customer")
 
         with col_b:
             st.write("**Risk Factor Summary**")
@@ -475,9 +446,9 @@ with tab6:
                 factors.append(f"High monthly charges (${w_monthly:.0f})")
             if factors:
                 for f in factors:
-                    st.write(f"- ⚠️ {f}")
+                    st.write(f"- {f}")
             else:
-                st.write("- ✅ No major risk factors detected")
+                st.write("- No major risk factors detected")
 
 st.divider()
-st.caption("Telco Churn Engine · Sada Santosh Kalmath")
+st.caption("Telco Churn Engine | Sada Santosh Kalmath")

@@ -16,123 +16,86 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.markdown(
-    """
-    <style>
-        /* Liquid Glass — Glassmorphism UI */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+MINIMAL_CSS = """
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-        .stApp {
-            background: linear-gradient(135deg, #e8f0fe 0%, #f3e8ff 50%, #fce7f3 100%);
-            font-family: 'Inter', sans-serif;
-        }
-        .stApp::before {
-            content: '';
-            position: fixed;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle at 30% 20%, rgba(99,102,241,0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(236,72,153,0.06) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .stApp > * { position: relative; z-index: 1; }
+    .stApp {
+        background-color: #fafafa;
+        font-family: 'Inter', sans-serif;
+    }
+    .stApp::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: url('https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1920&q=80') center/cover no-repeat;
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .stApp > * { position: relative; z-index: 1; }
 
-        [data-testid="stSidebar"] {
-            background: rgba(255,255,255,0.55) !important;
-            backdrop-filter: blur(20px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-            border-right: 1px solid rgba(255,255,255,0.6) !important;
-            box-shadow: 4px 0 30px rgba(0,0,0,0.05) !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stMarkdown"] {
-            color: #1e1b4b !important;
-        }
+    [data-testid="stSidebar"] {
+        background: #ffffff !important;
+        border-right: 1px solid #e5e7eb !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdown"] {
+        color: #111827 !important;
+    }
 
-        h1, h2, h3 {
-            color: #1e1b4b !important;
-            font-weight: 600 !important;
-            letter-spacing: -0.02em !important;
-        }
+    h1, h2, h3 {
+        color: #111827 !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.025em !important;
+    }
+    p, label, .stMarkdown { color: #374151 !important; }
 
-        /* Glass card metrics */
-        div[data-testid="stMetric"] {
-            background: rgba(255,255,255,0.6) !important;
-            backdrop-filter: blur(16px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-            border: 1px solid rgba(255,255,255,0.7) !important;
-            border-radius: 16px !important;
-            padding: 20px 24px !important;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8) !important;
-            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-        }
-        div[data-testid="stMetric"]:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important;
-        }
+    div[data-testid="stMetric"] {
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 12px !important;
+        padding: 20px 24px !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    }
 
-        /* Glass button */
-        .stButton > button {
-            background: linear-gradient(135deg, rgba(99,102,241,0.85), rgba(139,92,246,0.85)) !important;
-            color: #ffffff !important;
-            border: 1px solid rgba(255,255,255,0.3) !important;
-            border-radius: 12px !important;
-            font-weight: 500 !important;
-            padding: 10px 24px !important;
-            backdrop-filter: blur(8px) !important;
-            box-shadow: 0 4px 20px rgba(99,102,241,0.3) !important;
-            transition: all 0.25s ease !important;
-        }
-        .stButton > button:hover {
-            background: linear-gradient(135deg, rgba(79,70,229,0.95), rgba(124,58,237,0.95)) !important;
-            box-shadow: 0 6px 28px rgba(99,102,241,0.45) !important;
-            transform: translateY(-1px) !important;
-        }
+    .stButton > button {
+        background: #111827 !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        padding: 10px 24px !important;
+    }
+    .stButton > button:hover {
+        background: #1f2937 !important;
+    }
 
-        /* Glass tabs */
-        [data-baseweb="tab-list"] {
-            background: rgba(255,255,255,0.4) !important;
-            backdrop-filter: blur(12px) !important;
-            border-radius: 14px !important;
-            padding: 4px !important;
-            border: 1px solid rgba(255,255,255,0.6) !important;
-        }
-        [data-baseweb="tab"] { border-radius: 10px !important; font-weight: 500 !important; }
-        [aria-selected="true"] {
-            background: rgba(255,255,255,0.7) !important;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
-        }
+    [data-baseweb="tab-list"] {
+        background: #f3f4f6 !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
+        border: 1px solid #e5e7eb !important;
+    }
+    [data-baseweb="tab"] {
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+    }
+    [aria-selected="true"] {
+        background: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+    }
 
-        /* Glass input fields */
-        .stTextInput > div > div,
-        .stTextArea > div > div,
-        .stSelectbox > div > div {
-            background: rgba(255,255,255,0.5) !important;
-            backdrop-filter: blur(10px) !important;
-            border: 1px solid rgba(255,255,255,0.7) !important;
-            border-radius: 10px !important;
-        }
+    .stDataFrame {
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        border: 1px solid #e5e7eb !important;
+    }
 
-        .stDataFrame {
-            border-radius: 14px !important;
-            overflow: hidden !important;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.06) !important;
-            border: 1px solid rgba(255,255,255,0.6) !important;
-        }
-
-        .stAlert {
-            background: rgba(255,255,255,0.55) !important;
-            backdrop-filter: blur(12px) !important;
-            border-radius: 12px !important;
-            border: 1px solid rgba(255,255,255,0.6) !important;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important;
-        }
-
-        .block-container { padding-top: 2rem; max-width: 1100px; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+    .block-container { padding-top: 2rem; max-width: 1100px; }
+</style>
+"""
+st.markdown(MINIMAL_CSS, unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -192,7 +155,7 @@ with st.sidebar:
     st.write(f"Accuracy: {metrics['accuracy'] * 100:.1f}%")
     st.write(f"Vocabulary: {metrics['vocab_size']:,} terms")
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Scanner", "Batch audit", "Metrics", "Email Header Analyzer", "Threat Intelligence"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Scanner", "Batch Audit", "Metrics", "Email Header Analyzer", "Threat Intelligence"])
 
 with tab1:
     user_input = st.text_area(
@@ -213,11 +176,11 @@ with tab1:
             spam_prob = probabilities[spam_idx] * 100
 
             if prediction == "spam":
-                st.error(f"Spam / phishing detected — {spam_prob:.1f}% confidence")
+                st.error(f"Spam / phishing detected - {spam_prob:.1f}% confidence")
             else:
-                st.success(f"Likely legitimate — {(100 - spam_prob):.1f}% safe")
+                st.success(f"Likely legitimate - {(100 - spam_prob):.1f}% safe")
 
-            st.subheader("URL inspection")
+            st.subheader("URL Inspection")
             url_reports = analyze_urls_in_text(user_input)
             if url_reports:
                 for rep in url_reports:
@@ -334,9 +297,9 @@ with tab4:
                     spoof_flags.append(f"Return-path domain ({rp_domain}) mismatches From domain ({from_domain2})")
             if spoof_flags:
                 for flag in spoof_flags:
-                    st.error(f"⚠️ {flag}")
+                    st.error(flag)
             else:
-                st.success("✅ No obvious spoofing indicators detected.")
+                st.success("No obvious spoofing indicators detected.")
 
             with st.expander("Show all raw headers"):
                 for k, v in headers.items():
@@ -356,7 +319,7 @@ with tab5:
     with t1:
         fig_threat = px.bar(
             threat_data, x="Prevalence", y="Threat Category", orientation="h",
-            color="Prevalence", color_continuous_scale="Purples",
+            color="Prevalence", color_continuous_scale="Greys",
         )
         fig_threat.update_layout(
             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
@@ -368,7 +331,7 @@ with tab5:
     with t2:
         fig_conf = px.bar(
             threat_data, x="Avg Confidence", y="Threat Category", orientation="h",
-            color="Avg Confidence", color_continuous_scale="Viridis",
+            color="Avg Confidence", color_continuous_scale="Greys",
         )
         fig_conf.update_layout(
             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
@@ -381,7 +344,7 @@ with tab5:
     rules = pd.DataFrame({
         "Rule": ["URL TLD Filtering", "IP-Based Hostname Detection", "Long URL Detection", "Email @ Override Check", "TF-IDF Spam Keywords", "Punctuation Pattern Analysis"],
         "Type": ["Heuristic", "Heuristic", "Heuristic", "Heuristic", "ML", "ML"],
-        "Status": ["✅ Active"] * 6,
+        "Status": ["Active"] * 6,
     })
     st.dataframe(rules, use_container_width=True, hide_index=True)
 
@@ -391,4 +354,4 @@ with tab5:
     c3.metric("ML Features", f"{metrics['vocab_size']:,}")
 
 st.divider()
-st.caption("PhishShield · Sada Santosh Kalmath")
+st.caption("PhishShield | Sada Santosh Kalmath")

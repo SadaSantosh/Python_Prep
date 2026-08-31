@@ -2,7 +2,7 @@
 
 # 👋 Hey, I'm Sada Santosh
 
-### 🚀 Data Scientist · ML Engineer · AI Enthusiast
+### 🚀 Data Scientist · ML Engineer · Software Developer
 
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=2000&pause=1000&color=6366F1&center=true&vCenter=true&multiline=true&repeat=true&width=600&height=100&lines=Building+Intelligent+Systems+%F0%9F%A4%A0;Turning+Data+into+Decisions+%F0%9F%93%8A;Deploying+ML+to+Production+%E2%9A%99%EF%B8%8F" alt="Typing SVG" />
 
@@ -81,8 +81,8 @@
 
 - **Model:** XGBoost + SMOTE (handles class imbalance)
 - **Features:** 6 interactive tabs, What-If Explorer, Customer Segmentation
-- **Stack:** Streamlit · Plotly · Liquid Glass UI
-- **🚀 Status:** [Live on Streamlit Cloud](https://sadasantosh-telco-churn.streamlit.app)
+- **Stack:** Streamlit · Plotly · Minimalist UI
+- **Status:** [Live on Streamlit Cloud](https://sadasantosh-telco-churn.streamlit.app)
 
 </td>
 <td width="50%" valign="top">
@@ -92,7 +92,7 @@
 
 - **Model:** Random Forest (R² ≈ 98.35%)
 - **Features:** Mortgage calculator, renovation simulator, map visualization
-- **Stack:** Streamlit · Plotly · Liquid Glass UI
+- **Stack:** Streamlit · Plotly · Minimalist UI
 
 </td>
 </tr>
@@ -104,7 +104,7 @@
 
 - **Model:** Multinomial Naive Bayes + TF-IDF
 - **Features:** Email header analyzer, threat intelligence dashboard, batch CSV audit
-- **Stack:** Streamlit · NLK · Rule-based URL heuristics · Liquid Glass UI
+- **Stack:** Streamlit · NLK · Rule-based URL heuristics · Minimalist UI
 
 </td>
 </tr>
@@ -127,7 +127,7 @@
 ✅ GitHub Actions CI/CD (Python 3.10/3.11/3.12 matrix)
 ✅ Automated syntax validation + flake8 linting
 ✅ Model artifact validation + prediction pipeline tests
-✅ Liquid Glass UI with frosted glass effects
+✅ Clean minimalist UI with background images
 ```
 
 ---

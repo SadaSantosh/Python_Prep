@@ -15,124 +15,86 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.markdown(
-    """
-    <style>
-        /* Liquid Glass — Glassmorphism UI */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+MINIMAL_CSS = """
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-        .stApp {
-            background: linear-gradient(135deg, #e8f0fe 0%, #f3e8ff 50%, #fce7f3 100%);
-            font-family: 'Inter', sans-serif;
-        }
-        .stApp::before {
-            content: '';
-            position: fixed;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle at 30% 20%, rgba(99,102,241,0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(236,72,153,0.06) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .stApp > * { position: relative; z-index: 1; }
+    .stApp {
+        background-color: #fafafa;
+        font-family: 'Inter', sans-serif;
+    }
+    .stApp::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80') center/cover no-repeat;
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .stApp > * { position: relative; z-index: 1; }
 
-        [data-testid="stSidebar"] {
-            background: rgba(255,255,255,0.55) !important;
-            backdrop-filter: blur(20px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-            border-right: 1px solid rgba(255,255,255,0.6) !important;
-            box-shadow: 4px 0 30px rgba(0,0,0,0.05) !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stMarkdown"] {
-            color: #1e1b4b !important;
-        }
+    [data-testid="stSidebar"] {
+        background: #ffffff !important;
+        border-right: 1px solid #e5e7eb !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdown"] {
+        color: #111827 !important;
+    }
 
-        h1, h2, h3 {
-            color: #1e1b4b !important;
-            font-weight: 600 !important;
-            letter-spacing: -0.02em !important;
-        }
+    h1, h2, h3 {
+        color: #111827 !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.025em !important;
+    }
+    p, label, .stMarkdown { color: #374151 !important; }
 
-        /* Glass card metrics */
-        div[data-testid="stMetric"] {
-            background: rgba(255,255,255,0.6) !important;
-            backdrop-filter: blur(16px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-            border: 1px solid rgba(255,255,255,0.7) !important;
-            border-radius: 16px !important;
-            padding: 20px 24px !important;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8) !important;
-            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-        }
-        div[data-testid="stMetric"]:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important;
-        }
+    div[data-testid="stMetric"] {
+        background: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 12px !important;
+        padding: 20px 24px !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    }
 
-        /* Glass button */
-        .stButton > button {
-            background: linear-gradient(135deg, rgba(99,102,241,0.85), rgba(139,92,246,0.85)) !important;
-            color: #ffffff !important;
-            border: 1px solid rgba(255,255,255,0.3) !important;
-            border-radius: 12px !important;
-            font-weight: 500 !important;
-            padding: 10px 24px !important;
-            backdrop-filter: blur(8px) !important;
-            box-shadow: 0 4px 20px rgba(99,102,241,0.3) !important;
-            transition: all 0.25s ease !important;
-        }
-        .stButton > button:hover {
-            background: linear-gradient(135deg, rgba(79,70,229,0.95), rgba(124,58,237,0.95)) !important;
-            box-shadow: 0 6px 28px rgba(99,102,241,0.45) !important;
-            transform: translateY(-1px) !important;
-        }
+    .stButton > button {
+        background: #111827 !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        padding: 10px 24px !important;
+    }
+    .stButton > button:hover {
+        background: #1f2937 !important;
+    }
 
-        /* Glass tabs */
-        [data-baseweb="tab-list"] {
-            background: rgba(255,255,255,0.4) !important;
-            backdrop-filter: blur(12px) !important;
-            border-radius: 14px !important;
-            padding: 4px !important;
-            border: 1px solid rgba(255,255,255,0.6) !important;
-        }
-        [data-baseweb="tab"] { border-radius: 10px !important; font-weight: 500 !important; }
-        [aria-selected="true"] {
-            background: rgba(255,255,255,0.7) !important;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
-        }
+    [data-baseweb="tab-list"] {
+        background: #f3f4f6 !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
+        border: 1px solid #e5e7eb !important;
+    }
+    [data-baseweb="tab"] {
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+    }
+    [aria-selected="true"] {
+        background: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+    }
 
-        /* Glass input fields */
-        .stTextInput > div > div,
-        .stNumberInput > div > div,
-        .stSelectbox > div > div,
-        .stSlider > div > div {
-            background: rgba(255,255,255,0.5) !important;
-            backdrop-filter: blur(10px) !important;
-            border: 1px solid rgba(255,255,255,0.7) !important;
-            border-radius: 10px !important;
-        }
+    .stDataFrame {
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        border: 1px solid #e5e7eb !important;
+    }
 
-        .stDataFrame {
-            border-radius: 14px !important;
-            overflow: hidden !important;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.06) !important;
-            border: 1px solid rgba(255,255,255,0.6) !important;
-        }
-
-        .stAlert {
-            background: rgba(255,255,255,0.55) !important;
-            backdrop-filter: blur(12px) !important;
-            border-radius: 12px !important;
-            border: 1px solid rgba(255,255,255,0.6) !important;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important;
-        }
-
-        .block-container { padding-top: 2rem; max-width: 1100px; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+    .block-container { padding-top: 2rem; max-width: 1100px; }
+</style>
+"""
+st.markdown(MINIMAL_CSS, unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -165,17 +127,24 @@ with st.sidebar:
     elif "EUR" in currency_symbol:
         multiplier, curr_prefix = 0.92, "€"
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Valuation", "Batch processing", "Market map", "Mortgage Calculator", "Comparable Analysis"])
+# Initialize default values BEFORE tabs so all tabs can reference them
+default_sqft = 2200
+default_bedrooms = 3
+default_bathrooms = 2
+default_location_score = 7
+default_age = 5
+
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Valuation", "Batch Processing", "Market Map", "Mortgage Calculator", "Comparable Analysis"])
 
 with tab1:
     col1, col2 = st.columns(2)
     with col1:
-        sqft = st.number_input("Area (sqft)", min_value=500, max_value=10000, value=2200, step=50)
-        bedrooms = st.slider("Bedrooms", 1, 8, 3)
-        bathrooms = st.slider("Bathrooms", 1, 6, 2)
+        sqft = st.number_input("Area (sqft)", min_value=500, max_value=10000, value=default_sqft, step=50)
+        bedrooms = st.slider("Bedrooms", 1, 8, default_bedrooms)
+        bathrooms = st.slider("Bathrooms", 1, 6, default_bathrooms)
     with col2:
-        location_score = st.slider("Location score (1–10)", 1, 10, 7)
-        age = st.slider("Property age (years)", 0, 50, 5)
+        location_score = st.slider("Location score (1-10)", 1, 10, default_location_score)
+        age = st.slider("Property age (years)", 0, 50, default_age)
 
     renovate = st.checkbox("Simulate renovation")
     extra_sqft = extra_baths = location_boost = 0
@@ -195,8 +164,8 @@ with tab1:
 
         st.metric("Estimated value", f"{curr_prefix}{base_price:,.0f}")
         st.write(
-            f"Confidence range (±MAE): "
-            f"{curr_prefix}{base_price - error_margin:,.0f} — {curr_prefix}{base_price + error_margin:,.0f}"
+            f"Confidence range (+/-MAE): "
+            f"{curr_prefix}{base_price - error_margin:,.0f} - {curr_prefix}{base_price + error_margin:,.0f}"
         )
 
         if renovate:
@@ -228,7 +197,7 @@ with tab1:
         st.plotly_chart(fig, use_container_width=True)
 
 with tab2:
-    st.subheader("Batch valuation")
+    st.subheader("Batch Valuation")
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
     req_cols = ["sqft", "bedrooms", "bathrooms", "age", "location_score"]
 
@@ -236,7 +205,7 @@ with tab2:
         batch_df = pd.read_csv(uploaded_file)
         if all(c in batch_df.columns for c in req_cols):
             preds = model.predict(scaler.transform(batch_df[req_cols])) * multiplier
-            batch_df["AI_Valuation"] = preds
+            batch_df["Valuation"] = preds
             batch_df["Lower_Bound"] = preds - (mae * multiplier)
             batch_df["Upper_Bound"] = preds + (mae * multiplier)
 
@@ -245,8 +214,8 @@ with tab2:
 
             k1, k2, k3 = st.columns(3)
             k1.metric("Listings", len(batch_df))
-            k2.metric("Portfolio value", f"{curr_prefix}{batch_df['AI_Valuation'].sum():,.0f}")
-            k3.metric("Average value", f"{curr_prefix}{batch_df['AI_Valuation'].mean():,.0f}")
+            k2.metric("Portfolio value", f"{curr_prefix}{batch_df['Valuation'].sum():,.0f}")
+            k3.metric("Average value", f"{curr_prefix}{batch_df['Valuation'].mean():,.0f}")
 
             st.download_button(
                 "Download CSV",
@@ -258,7 +227,7 @@ with tab2:
             st.error(f"Missing columns. Required: {req_cols}")
 
 with tab3:
-    st.subheader("Regional price map (synthetic)")
+    st.subheader("Regional Price Map (synthetic)")
     np.random.seed(42)
     lat_center, lon_center = 37.7749, -122.4194
     geo_points = 150
@@ -327,7 +296,7 @@ with tab4:
         "Monthly Amount": [monthly_mortgage, monthly_tax, monthly_insurance],
     })
     fig_pie = px.pie(breakdown_df, values="Monthly Amount", names="Component",
-                     color_discrete_sequence=["#6366f1", "#a78bfa", "#c4b5fd"])
+                     color_discrete_sequence=["#374151", "#6b7280", "#9ca3af"])
     fig_pie.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         font_color="#374151", margin=dict(l=0, r=0, t=20, b=0),
@@ -336,16 +305,16 @@ with tab4:
     st.plotly_chart(fig_pie, use_container_width=True)
 
     total_interest = (monthly_mortgage * num_payments) - loan_amount
-    st.info(f"**Total interest over {loan_term_years} years:** {curr_prefix}{total_interest:,.0f}  •  **Total cost:** {curr_prefix}{(loan_amount + total_interest + down_payment + insurance_annual * loan_term_years):,.0f}")
+    st.info(f"**Total interest over {loan_term_years} years:** {curr_prefix}{total_interest:,.0f}  |  **Total cost:** {curr_prefix}{(loan_amount + total_interest + down_payment + insurance_annual * loan_term_years):,.0f}")
 
 with tab5:
     st.subheader("Comparable Property Analysis")
     st.write("See how your property compares to similar listings in the area.")
 
-    comp_sqft = st.slider("Comparable area (sqft)", 500, 10000, sqft, step=50, key="comp_sqft")
-    comp_bedrooms = st.slider("Comparable bedrooms", 1, 8, bedrooms, key="comp_bed")
-    comp_bathrooms = st.slider("Comparable bathrooms", 1, 6, bathrooms, key="comp_bath")
-    comp_location = st.slider("Comparable location (1-10)", 1, 10, location_score, key="comp_loc")
+    comp_sqft = st.slider("Comparable area (sqft)", 500, 10000, default_sqft, step=50, key="comp_sqft")
+    comp_bedrooms = st.slider("Comparable bedrooms", 1, 8, default_bedrooms, key="comp_bed")
+    comp_bathrooms = st.slider("Comparable bathrooms", 1, 6, default_bathrooms, key="comp_bath")
+    comp_location = st.slider("Comparable location (1-10)", 1, 10, default_location_score, key="comp_loc")
     num_comps = st.slider("Number of comparables", 5, 50, 15, key="num_comps")
 
     np.random.seed(42)
@@ -359,7 +328,7 @@ with tab5:
     comps["Valuation"] = model.predict(scaler.transform(comps[["sqft", "bedrooms", "bathrooms", "age", "location_score"]])) * multiplier
     comps["Price_per_sqft"] = comps["Valuation"] / comps["sqft"]
 
-    target_input = pd.DataFrame([{"sqft": comp_sqft, "bedrooms": comp_bedrooms, "bathrooms": comp_bathrooms, "age": age, "location_score": comp_location}])
+    target_input = pd.DataFrame([{"sqft": comp_sqft, "bedrooms": comp_bedrooms, "bathrooms": comp_bathrooms, "age": default_age, "location_score": comp_location}])
     target_val = model.predict(scaler.transform(target_input))[0] * multiplier
     target_ppsf = target_val / comp_sqft
 
@@ -373,14 +342,14 @@ with tab5:
     if abs(diff_pct) < 5:
         st.success(f"Your property is priced competitively ({diff_pct:+.1f}% vs average comparable)")
     elif diff_pct > 0:
-        st.warning(f"Your property is {diff_pct:+.1f}% above comparable average — verify premium features")
+        st.warning(f"Your property is {diff_pct:+.1f}% above comparable average - verify premium features")
     else:
-        st.info(f"Your property is {diff_pct:+.1f}% below comparable average — potential value opportunity")
+        st.info(f"Your property is {diff_pct:+.1f}% below comparable average - potential value opportunity")
 
     st.dataframe(comps.sort_values("Valuation", ascending=False).reset_index(drop=True), use_container_width=True)
 
     fig_comp = px.scatter(comps, x="sqft", y="Valuation", color="Price_per_sqft",
-                          color_continuous_scale="Purples", hover_data=["bedrooms", "bathrooms"])
+                          color_continuous_scale="Greys", hover_data=["bedrooms", "bathrooms"])
     fig_comp.add_scatter(x=[comp_sqft], y=[target_val], mode="markers", marker=dict(size=15, color="red", symbol="star"), name="Your Property")
     fig_comp.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
@@ -389,4 +358,4 @@ with tab5:
     st.plotly_chart(fig_comp, use_container_width=True)
 
 st.divider()
-st.caption("ValuaAI · Sada Santosh Kalmath")
+st.caption("ValuaAI | Sada Santosh Kalmath")

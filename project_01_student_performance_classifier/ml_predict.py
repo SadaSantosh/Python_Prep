@@ -11,7 +11,7 @@ TREE_MODEL_PATH = "decision_tree_model.pkl"
 
 # Check if the models are already trained and saved
 if not os.path.exists(LR_MODEL_PATH) or not os.path.exists(TREE_MODEL_PATH):
-    print("🤖 First-time setup: Training models and saving them to disk...")
+    print("First-time setup: Training models and saving them to disk...")
     df = pd.read_csv("student_data.csv")
     df["Hours_Studied"] = df["Hours_Studied"].fillna(df["Hours_Studied"].mean())
 
