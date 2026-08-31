@@ -85,10 +85,8 @@ class TestPredictionPipeline:
 class TestPreprocessingPipeline:
     """Test the preprocessing helper function logic."""
 
-    def test_raw_batch_preprocessing(self, artifacts):
+    def test_raw_batch_preprocessing(self):
         """Simulate raw batch input and verify preprocessing doesn't crash."""
-        _, _, feature_cols, df = artifacts
-
         # Create a minimal raw-like DataFrame
         raw_df = pd.DataFrame({
             "customerID": ["CUST_TEST_001"],
@@ -105,7 +103,8 @@ class TestPreprocessingPipeline:
             "Dependents": ["No"],
         })
 
-        # We only test that the code path doesn't error
-        # The full preprocess_raw_batch function is tested via the app
+        # Verify the raw DataFrame structure
         assert len(raw_df) == 1
         assert "tenure" in raw_df.columns
+        assert "MonthlyCharges" in raw_df.columns
+        assert "TotalCharges" in raw_df.columns

@@ -108,13 +108,16 @@ class TestURLAnalysis:
     def test_suspicious_tld_detection(self):
         suspicious_tlds = [".xyz", ".top", ".online", ".site", ".club", ".info", ".live", ".cc", ".tk"]
         test_urls = [
-            ("http://malicious.xyz/steal", True),
+            ("http://malicious.xyz", True),
             ("https://google.com/search", False),
             ("http://phish.top/login", True),
             ("https://github.com/repo", False),
+            ("http://scam.xyz/path", True),
+            ("https://trusted.com", False),
         ]
         for url, should_flag in test_urls:
-            has_suspicious = any(url.endswith(tld) for tld in suspicious_tlds)
+            # Match the app heuristic: endswith(tld) or tld+"/" in url
+            has_suspicious = any(url.endswith(tld) or (tld + "/") in url for tld in suspicious_tlds)
             assert has_suspicious == should_flag, f"URL {url}: expected flag={should_flag}"
 
     def test_ip_based_hostname_detection(self):
