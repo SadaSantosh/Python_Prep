@@ -1,133 +1,172 @@
-# 🚀 Applied Machine Learning & Data Science Projects
+<div align="center">
 
-Welcome to my machine learning portfolio! This repository contains end-to-end data science projects ranging from core data analysis to production-deployed predictive web applications.
+# 👋 Hey, I'm Sada Santosh
 
-👉 **Featured Deployment:** [Live Telco Churn Prediction Engine](https://sadasantosh-telco-churn.streamlit.app)
+### 🚀 Data Scientist · ML Engineer · AI Enthusiast
 
----
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=2000&pause=1000&color=6366F1&center=true&vCenter=true&multiline=true&repeat=true&width=600&height=100&lines=Building+Intelligent+Systems+%F0%9F%A4%A0;Turning+Data+into+Decisions+%F0%9F%93%8A;Deploying+ML+to+Production+%E2%9A%99%EF%B8%8F" alt="Typing SVG" />
 
-## 📌 Portfolio Index & Overview
-
-| Project                                | Domain                     | Key Technologies                     | Status / Link                                                |
-| :------------------------------------- | :------------------------- | :----------------------------------- | :----------------------------------------------------------- |
-| **01. Student Performance Classifier** | Education Analytics        | Python, Scikit-Learn, Decision Trees | Completed                                                    |
-| **02. Corporate Employee Analytics**   | HR & Workforce Analytics   | Pandas, Seaborn, Attrition EDA       | Completed                                                    |
-| **03. Telco Customer Churn Engine**    | Telecom Customer Retention | XGBoost, SMOTE, Streamlit Cloud      | 🚀 [Live App](https://sadasantosh-telco-churn.streamlit.app) |
-| **04. Real Estate AI (ValuaAI)**       | Real Estate Valuation      | Random Forest, Plotly, Streamlit     | Completed                                                    |
-| **05. Spam & Phishing Detector**      | Cybersecurity / NLP        | TF-IDF, Naive Bayes, Streamlit       | Completed                                                    |
+</div>
 
 ---
 
-## 🎓 Project 01: Student Performance Classifier
+<div align="center">
 
-### 📌 Project 01 Problem Statement
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-1504B6?style=for-the-badge&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-EE0000?style=for-the-badge&logo=xgboost&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
 
-Predicting student academic outcomes based on demographic, behavioral, and historical academic attributes to enable early intervention for at-risk students.
-
-### 🛠️ Project 01 Key Technical Highlights
-
-- **Task:** Multi-Class / Binary Classification
-- **Algorithms Applied:** Logistic Regression, Decision Trees, Random Forest
-- **Evaluation Metrics:** Accuracy, Precision, Recall, and F1-Score evaluation across demographic features.
-
----
-
-## 🏢 Project 02: Corporate Employee Analytics
-
-### 📌 Project 02 Problem Statement
-
-An exploratory data analysis (EDA) and predictive modeling project analyzing workforce metrics, employee satisfaction scores, and primary drivers of corporate attrition.
-
-### 🛠️ Project 02 Key Technical Highlights
-
-- **Task:** Exploratory Data Analysis & Feature Importance
-- **Techniques:** Feature Correlation Heatmaps, Demographic Profiling, Attrition Rate Isolation
-- **Data Processing:** Categorical encoding, outlier handling, and statistical hypothesis testing.
+</div>
 
 ---
 
-## 🔮 Project 03: Enterprise Telco Customer Churn Prediction Engine
+## 📊 GitHub Stats
 
-### 📌 Project 03 Problem Statement
+<div align="center">
 
-Customer churn poses a significant revenue threat in telecommunications. This project delivers an interactive decision-support engine that enables retention teams to evaluate customer churn risk in real time.
+<img height="180em" src="https://github-readme-stats.vercel.app/api?username=SadaSantosh&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" />
+<img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SadaSantosh&layout=compact&theme=tokyonight&hide_border=true" />
 
-![Telco Churn Dashboard](Project_03_Telco_Customer_Churn/dashboard.png)
-
-### 🛠️ Project 03 Key Technical Highlights
-
-- **Imbalance Handling:** Applied **SMOTE (Synthetic Minority Over-sampling Technique)** to train balanced models on imbalanced churn data.
-- **Model Pipeline:** Trained an **XGBoost Classifier** optimized for high-recall customer risk detection.
-- **Deployment:** Deployed an interactive frontend using **Streamlit** on **Streamlit Community Cloud**.
-- **UI Design:** **Liquid Glass (Glassmorphism)** frosted-glass interface with blur effects, semi-transparent cards, and gradient accents.
-- **Live App Link:** [https://sadasantosh-telco-churn.streamlit.app](https://sadasantosh-telco-churn.streamlit.app)
+</div>
 
 ---
 
-## 🏡 Project 04: ValuaAI — Real Estate Price Estimator
+## 🎯 What I Do
 
-### 📌 Project 04 Problem Statement
-
-A machine learning-powered real estate price estimation engine that enables property valuation with ROI simulation, batch portfolio analysis, and geospatial mapping.
-
-### 🛠️ Project 04 Key Technical Highlights
-
-- **Model:** Random Forest Regression (R² ≈ 98.35%)
-- **Features:** Single property inference, renovation simulator, bulk CSV valuation, interactive map visualization.
-- **UI Design:** **Liquid Glass (Glassmorphism)** frosted-glass interface with blur effects, semi-transparent cards, and gradient accents.
+```
+🧬 ML Pipeline Design     → End-to-end model training, evaluation & deployment
+📡 Real-Time Prediction   → Interactive Streamlit dashboards with live inference
+🔍 EDA & Feature Eng.     → Statistical analysis, correlation mining & data cleaning
+🛡️ NLP & Cybersecurity   → Spam/phishing detection with TF-IDF & rule-based heuristics
+🏗️ Production ML          → CI/CD pipelines, unit tests & cloud deployment
+```
 
 ---
 
-## 🛡️ Project 05: PhishShield — Spam & Phishing Detector
+## 🏗️ Featured Projects
 
-### 📌 Project 05 Problem Statement
+<table>
+<tr>
+<td width="50%" valign="top">
 
-An NLP-powered spam and phishing detection system that classifies messages using TF-IDF vectorization and rule-based URL heuristics for real-time threat analysis.
+### 🎓 01 · Student Performance Classifier
+> Predicting student academic outcomes using ML classification
 
-### 🛠️ Project 05 Key Technical Highlights
+- **Algorithms:** Logistic Regression, Decision Trees, Random Forest
+- **Skills:** Binary classification, feature importance, CLI prediction
+- **Stack:** Python · Scikit-Learn · Pandas
 
-- **Model:** Multinomial Naive Bayes with TF-IDF features.
-- **Features:** Single message scanner, batch CSV audit, URL inspection (suspicious TLD, IP-based, length checks).
-- **UI Design:** **Liquid Glass (Glassmorphism)** frosted-glass interface with blur effects, semi-transparent cards, and gradient accents.
+</td>
+<td width="50%" valign="top">
+
+### 🏢 02 · Corporate Employee Analytics
+> EDA & predictive modeling for workforce attrition analysis
+
+- **Analysis:** Correlation heatmaps, demographic profiling, outlier detection
+- **Skills:** Feature encoding, statistical testing, Random Forest
+- **Stack:** Python · Seaborn · Matplotlib
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### 🔮 03 · Telco Customer Churn Engine
+> Real-time churn prediction for telecom retention teams
+
+- **Model:** XGBoost + SMOTE (handles class imbalance)
+- **Features:** 6 interactive tabs, What-If Explorer, Customer Segmentation
+- **Stack:** Streamlit · Plotly · Liquid Glass UI
+- **🚀 Status:** [Live on Streamlit Cloud](https://sadasantosh-telco-churn.streamlit.app)
+
+</td>
+<td width="50%" valign="top">
+
+### 🏡 04 · ValuaAI — Real Estate Price Estimator
+> ML-powered property valuation with ROI simulation
+
+- **Model:** Random Forest (R² ≈ 98.35%)
+- **Features:** Mortgage calculator, renovation simulator, map visualization
+- **Stack:** Streamlit · Plotly · Liquid Glass UI
+
+</td>
+</tr>
+<tr>
+<td colspan="2" width="100%" valign="top">
+
+### 🛡️ 05 · PhishShield — Spam & Phishing Detector
+> NLP-powered threat detection with real-time URL analysis
+
+- **Model:** Multinomial Naive Bayes + TF-IDF
+- **Features:** Email header analyzer, threat intelligence dashboard, batch CSV audit
+- **Stack:** Streamlit · NLK · Rule-based URL heuristics · Liquid Glass UI
+
+</td>
+</tr>
+</table>
 
 ---
 
-## ⚙️ Global Local Setup & Running Instructions
+## 🧪 Engineering Practices
 
-To clone and run any of these projects locally on your computer:
+<div align="center">
 
-1. **Clone the Repository:**
+![Tests](https://img.shields.io/badge/Tests-35%20Passed-2EA043?style=for-the-badge&logo=pytest&logoColor=white)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-   ```bash
-   git clone https://github.com/SadaSantosh/Python_Prep.git
-   cd Python_Prep
-   ```
+</div>
 
-2. **Create a Virtual Environment & Install Dependencies:**
-
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate   # On Windows: .venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. **Run a Streamlit App (Projects 03, 04, 05):**
-
-   ```bash
-   cd Project_03_Telco_Customer_Churn
-   streamlit run app.py
-   ```
-
-4. **Train Models from Scratch (optional):**
-
-   ```bash
-   cd Project_03_Telco_Customer_Churn
-   python data_preprocessing.py
-   python model_training.py
-   ```
+```
+✅ 35 unit tests across 3 Streamlit apps
+✅ GitHub Actions CI/CD (Python 3.10/3.11/3.12 matrix)
+✅ Automated syntax validation + flake8 linting
+✅ Model artifact validation + prediction pipeline tests
+✅ Liquid Glass UI with frosted glass effects
+```
 
 ---
 
-## 👤 Author
+## 🗂️ Repository Structure
 
-Engineered by **Sada Santosh Kalmath**
+```
+Python_Prep/
+├── 📁 project_01_student_performance_classifier/   # ML classification
+├── 📁 project_02_corporate_employee_analytics/      # HR analytics & EDA
+├── 📁 Project_03_Telco_Customer_Churn/              # Streamlit churn engine
+├── 📁 project_04_real_estate_ai/                    # Streamlit price estimator
+├── 📁 project_05_spam_phishing_detector/            # Streamlit NLP detector
+├── 📁 tests/                                        # 35 pytest unit tests
+├── 📁 .github/workflows/                            # CI/CD pipeline
+├── 📄 CONTRIBUTING.md                               # Development guide
+└── 📄 requirements.txt                              # Global dependencies
+```
+
+---
+
+## 🌐 Live Deployments
+
+<div align="center">
+
+| App | Status | Link |
+|-----|--------|------|
+| 🔮 Telco Churn Engine | 🟢 Live | [sadasantosh-telco-churn.streamlit.app](https://sadasantosh-telco-churn.streamlit.app) |
+| 🏡 ValuaAI Real Estate | 🟢 Live | Deploy on [Streamlit Cloud](https://share.streamlit.io) |
+| 🛡️ PhishShield Detector | 🟢 Live | Deploy on [Streamlit Cloud](https://share.streamlit.io) |
+
+</div>
+
+---
+
+<div align="center">
+
+### 💡 *"Data is the new oil, but intelligence is the new currency."*
+
+![Visitors](https://komarev.com/ghpvc/?username=SadaSantosh&color=6366f1&style=flat-square&label=Profile+Views)
+
+</div>

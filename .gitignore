@@ -1,12 +1,51 @@
+# Python
 __pycache__/
 *.py[cod]
-.pytest_cache/
+*$py.class
+*.pyo
+
+# Virtual environments
 .venv/
-*.pkl
-.env
-.DS_Store
+venv/
+env/
+ENV/
+
+# Distribution / build
 build/
 dist/
 *.egg-info/
-htmlcov/
+*.egg
+
+# Testing
+.pytest_cache/
 .coverage
+htmlcov/
+
+# Model artifacts (not tracked)
+*.pkl
+*.joblib
+*.h5
+*.pkl
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Logs
+*.log
