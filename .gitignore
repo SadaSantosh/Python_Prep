@@ -2,3 +2,11 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+*.pkl
+.env
+.DS_Store
+build/
+dist/
+*.egg-info/
+htmlcov/
+.coverage

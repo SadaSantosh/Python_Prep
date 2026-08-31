@@ -165,7 +165,7 @@ with st.sidebar:
     elif "EUR" in currency_symbol:
         multiplier, curr_prefix = 0.92, "€"
 
-tab1, tab2, tab3 = st.tabs(["Valuation", "Batch processing", "Market map"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Valuation", "Batch processing", "Market map", "Mortgage Calculator", "Comparable Analysis"])
 
 with tab1:
     col1, col2 = st.columns(2)
@@ -286,6 +286,107 @@ with tab3:
         margin=dict(l=0, r=0, t=40, b=0),
     )
     st.plotly_chart(fig_map, use_container_width=True)
+
+with tab4:
+    st.subheader("Mortgage Calculator")
+    st.write("Estimate monthly payments based on property value and financing terms.")
+
+    mc1, mc2 = st.columns(2)
+    with mc1:
+        prop_value = st.number_input("Property value ($)", min_value=50000, max_value=5000000, value=500000, step=10000, key="mort_prop")
+        down_payment_pct = st.slider("Down payment (%)", 0, 50, 20, key="mort_down")
+        loan_term_years = st.selectbox("Loan term", [15, 20, 30], key="mort_term")
+    with mc2:
+        interest_rate = st.slider("Interest rate (%)", 1.0, 10.0, 6.5, 0.1, key="mort_rate")
+        property_tax_rate = st.slider("Annual property tax rate (%)", 0.0, 3.0, 1.1, 0.1, key="mort_tax")
+        insurance_annual = st.number_input("Annual insurance ($)", min_value=0, max_value=10000, value=1500, step=100, key="mort_ins")
+
+    down_payment = prop_value * (down_payment_pct / 100)
+    loan_amount = prop_value - down_payment
+    monthly_rate = (interest_rate / 100) / 12
+    num_payments = loan_term_years * 12
+
+    if monthly_rate > 0:
+        monthly_mortgage = loan_amount * (monthly_rate * (1 + monthly_rate)**num_payments) / ((1 + monthly_rate)**num_payments - 1)
+    else:
+        monthly_mortgage = loan_amount / num_payments
+
+    monthly_tax = (prop_value * property_tax_rate / 100) / 12
+    monthly_insurance = insurance_annual / 12
+    total_monthly = monthly_mortgage + monthly_tax + monthly_insurance
+
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Down Payment", f"{curr_prefix}{down_payment:,.0f}")
+    m2.metric("Loan Amount", f"{curr_prefix}{loan_amount:,.0f}")
+    m3.metric("Monthly Mortgage", f"{curr_prefix}{monthly_mortgage:,.0f}")
+    m4.metric("Total Monthly Payment", f"{curr_prefix}{total_monthly:,.0f}")
+
+    st.write("**Payment Breakdown**")
+    breakdown_df = pd.DataFrame({
+        "Component": ["Principal & Interest", "Property Tax", "Insurance"],
+        "Monthly Amount": [monthly_mortgage, monthly_tax, monthly_insurance],
+    })
+    fig_pie = px.pie(breakdown_df, values="Monthly Amount", names="Component",
+                     color_discrete_sequence=["#6366f1", "#a78bfa", "#c4b5fd"])
+    fig_pie.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        font_color="#374151", margin=dict(l=0, r=0, t=20, b=0),
+        showlegend=True,
+    )
+    st.plotly_chart(fig_pie, use_container_width=True)
+
+    total_interest = (monthly_mortgage * num_payments) - loan_amount
+    st.info(f"**Total interest over {loan_term_years} years:** {curr_prefix}{total_interest:,.0f}  •  **Total cost:** {curr_prefix}{(loan_amount + total_interest + down_payment + insurance_annual * loan_term_years):,.0f}")
+
+with tab5:
+    st.subheader("Comparable Property Analysis")
+    st.write("See how your property compares to similar listings in the area.")
+
+    comp_sqft = st.slider("Comparable area (sqft)", 500, 10000, sqft, step=50, key="comp_sqft")
+    comp_bedrooms = st.slider("Comparable bedrooms", 1, 8, bedrooms, key="comp_bed")
+    comp_bathrooms = st.slider("Comparable bathrooms", 1, 6, bathrooms, key="comp_bath")
+    comp_location = st.slider("Comparable location (1-10)", 1, 10, location_score, key="comp_loc")
+    num_comps = st.slider("Number of comparables", 5, 50, 15, key="num_comps")
+
+    np.random.seed(42)
+    comps = pd.DataFrame({
+        "sqft": np.random.randint(max(500, comp_sqft - 500), comp_sqft + 500, num_comps),
+        "bedrooms": np.random.randint(max(1, comp_bedrooms - 1), min(8, comp_bedrooms + 2), num_comps),
+        "bathrooms": np.random.randint(max(1, comp_bathrooms - 1), min(6, comp_bathrooms + 2), num_comps),
+        "age": np.random.randint(0, 30, num_comps),
+        "location_score": np.random.randint(max(1, comp_location - 2), min(10, comp_location + 3), num_comps),
+    })
+    comps["Valuation"] = model.predict(scaler.transform(comps[["sqft", "bedrooms", "bathrooms", "age", "location_score"]])) * multiplier
+    comps["Price_per_sqft"] = comps["Valuation"] / comps["sqft"]
+
+    target_input = pd.DataFrame([{"sqft": comp_sqft, "bedrooms": comp_bedrooms, "bathrooms": comp_bathrooms, "age": age, "location_score": comp_location}])
+    target_val = model.predict(scaler.transform(target_input))[0] * multiplier
+    target_ppsf = target_val / comp_sqft
+
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Your Estimate", f"{curr_prefix}{target_val:,.0f}")
+    k2.metric("Avg Comparable", f"{curr_prefix}{comps['Valuation'].mean():,.0f}")
+    k3.metric("Your Price/sqft", f"{curr_prefix}{target_ppsf:,.0f}")
+    k4.metric("Avg Comp Price/sqft", f"{curr_prefix}{comps['Price_per_sqft'].mean():,.0f}")
+
+    diff_pct = ((target_val - comps['Valuation'].mean()) / comps['Valuation'].mean()) * 100
+    if abs(diff_pct) < 5:
+        st.success(f"Your property is priced competitively ({diff_pct:+.1f}% vs average comparable)")
+    elif diff_pct > 0:
+        st.warning(f"Your property is {diff_pct:+.1f}% above comparable average — verify premium features")
+    else:
+        st.info(f"Your property is {diff_pct:+.1f}% below comparable average — potential value opportunity")
+
+    st.dataframe(comps.sort_values("Valuation", ascending=False).reset_index(drop=True), use_container_width=True)
+
+    fig_comp = px.scatter(comps, x="sqft", y="Valuation", color="Price_per_sqft",
+                          color_continuous_scale="Purples", hover_data=["bedrooms", "bathrooms"])
+    fig_comp.add_scatter(x=[comp_sqft], y=[target_val], mode="markers", marker=dict(size=15, color="red", symbol="star"), name="Your Property")
+    fig_comp.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        font_color="#374151", margin=dict(l=0, r=0, t=20, b=0),
+    )
+    st.plotly_chart(fig_comp, use_container_width=True)
 
 st.divider()
 st.caption("ValuaAI · Sada Santosh Kalmath")

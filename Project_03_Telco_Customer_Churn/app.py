@@ -192,11 +192,13 @@ except Exception as e:
     st.info("Run `data_preprocessing.py` and `model_training.py` in this folder first.")
     st.stop()
 
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Single Assessment",
     "Retention Simulator",
     "Batch Scoring",
     "Model Analytics",
+    "Customer Segments",
+    "What-If Explorer",
 ])
 
 with tab1:
@@ -375,6 +377,107 @@ with tab4:
         plot_df = df_sample.copy()
         plot_df["Churn"] = plot_df["Churn"].map({0: "No", 1: "Yes"})
         st.scatter_chart(plot_df, x="tenure", y="MonthlyCharges", color="Churn")
+
+with tab5:
+    st.subheader("Customer Segmentation Analysis")
+    st.write("Explore churn distribution across key customer segments.")
+
+    seg_df = df_sample.copy()
+    seg_df["Churn_Label"] = seg_df["Churn"].map({0: "No", 1: "Yes"})
+
+    seg1, seg2 = st.columns(2)
+    with seg1:
+        st.write("**Churn by Contract Type**")
+        contract_cols = [c for c in seg_df.columns if c.startswith("Contract_")]
+        if contract_cols:
+            contract_data = []
+            for c in contract_cols:
+                label = c.replace("Contract_", "")
+                subset = seg_df[seg_df[c] == 1]
+                if len(subset) > 0:
+                    churn_rate = subset["Churn"].mean() * 100
+                    contract_data.append({"Contract": label, "Count": len(subset), "Churn Rate %": churn_rate})
+            if contract_data:
+                st.dataframe(pd.DataFrame(contract_data), use_container_width=True)
+
+    with seg2:
+        st.write("**Churn by Internet Service**")
+        inet_cols = [c for c in seg_df.columns if c.startswith("InternetService_")]
+        if inet_cols:
+            inet_data = []
+            for c in inet_cols:
+                label = c.replace("InternetService_", "")
+                subset = seg_df[seg_df[c] == 1]
+                if len(subset) > 0:
+                    churn_rate = subset["Churn"].mean() * 100
+                    inet_data.append({"Service": label, "Count": len(subset), "Churn Rate %": churn_rate})
+            if inet_data:
+                st.dataframe(pd.DataFrame(inet_data), use_container_width=True)
+
+    st.write("**Monthly Charges Distribution by Churn Status**")
+    churn_groups = seg_df.groupby("Churn_Label")["MonthlyCharges"].agg(["mean", "median", "count"])
+    st.dataframe(churn_groups.round(2), use_container_width=True)
+
+    avg_churner = seg_df[seg_df["Churn"] == 1]["MonthlyCharges"].mean()
+    avg_stayer = seg_df[seg_df["Churn"] == 0]["MonthlyCharges"].mean()
+    diff = avg_churner - avg_stayer
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Avg Monthly (Churners)", f"${avg_churner:,.2f}")
+    c2.metric("Avg Monthly (Stayers)", f"${avg_stayer:,.2f}")
+    c3.metric("Difference", f"${diff:,.2f}", delta=f"{'Higher' if diff > 0 else 'Lower'} for churners")
+
+with tab6:
+    st.subheader("What-If Explorer")
+    st.write("Manually adjust features to see how the churn probability changes.")
+
+    wif1, wif2 = st.columns(2)
+    with wif1:
+        w_tenure = st.slider("What-If: Tenure (months)", 1, 72, 12, key="wif_tenure")
+        w_monthly = st.slider("What-If: Monthly charges ($)", 18.0, 120.0, 70.0, key="wif_monthly")
+        w_contract_wif = st.selectbox("What-If: Contract", ["Month-to-month", "One year", "Two year"], key="wif_contract")
+    with wif2:
+        w_internet_wif = st.selectbox("What-If: Internet", ["DSL", "Fiber optic", "No"], key="wif_internet")
+        w_support_wif = st.selectbox("What-If: Tech Support", ["Yes", "No", "No internet service"], key="wif_support")
+        w_payment_wif = st.selectbox("What-If: Payment", ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"], key="wif_payment")
+
+    if st.button("Run What-If analysis", use_container_width=True):
+        w_total = w_tenure * w_monthly
+        wif_df = build_input_df(w_monthly, w_support_wif, w_contract_wif)
+        wif_prob = model.predict_proba(wif_df)[0][1] * 100
+
+        col_a, col_b = st.columns(2)
+        with col_a:
+            st.metric("What-If Churn Probability", f"{wif_prob:.1f}%")
+            st.progress(int(wif_prob))
+            if wif_prob >= 70:
+                st.error("🔴 Critical risk — immediate action recommended")
+            elif wif_prob >= 50:
+                st.warning("🟡 Moderate risk — consider retention offer")
+            elif wif_prob >= 30:
+                st.info("🟢 Low risk — monitor quarterly")
+            else:
+                st.success("✅ Very low risk — healthy customer")
+
+        with col_b:
+            st.write("**Risk Factor Summary**")
+            factors = []
+            if w_contract_wif == "Month-to-month":
+                factors.append("Month-to-month contract")
+            if w_internet_wif == "Fiber optic":
+                factors.append("Fiber optic service")
+            if w_support_wif == "No":
+                factors.append("No tech support")
+            if w_tenure < 12:
+                factors.append("Short tenure (<12 months)")
+            if w_payment_wif == "Electronic check":
+                factors.append("Electronic check payment")
+            if w_monthly > 80:
+                factors.append(f"High monthly charges (${w_monthly:.0f})")
+            if factors:
+                for f in factors:
+                    st.write(f"- ⚠️ {f}")
+            else:
+                st.write("- ✅ No major risk factors detected")
 
 st.divider()
 st.caption("Telco Churn Engine · Sada Santosh Kalmath")
