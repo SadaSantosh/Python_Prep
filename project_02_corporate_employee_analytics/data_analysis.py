@@ -28,7 +28,10 @@ df["Salary"] = np.where(df["Salary"] > upper_bound, upper_bound,
 print("✅ Outliers capped successfully within normal distrubution bounds.")
 
 #3. Exclude non-numeric ID column for correlation
-numeric_df = df.drop(columns=["Employee_ID", "Performance_Score"])
+drop_cols = ["Employee_ID", "Performance_Score", "Attrition"]
+if "Attrition" in df.columns:
+    df["Attrition_Binary"] = (df["Attrition"] == "Yes").astype(int)
+numeric_df = df.drop(columns=[c for c in drop_cols if c in df.columns])
 
 #4. Compute Correlation Matrix
 print("\n 📈 Computing Feature Correlation Matrix....")
@@ -42,4 +45,17 @@ plt.title("Day 9: Employee Feature Correlation Heatmap")
 plt.tight_layout()
 plt.savefig("correlation_heatmap.png", dpi=300)
 print("\n Heatmap saved as 'correlation_heatmap.png'!!!!!")
+
+#6. Attrition rate by department (from raw data before encoding)
+raw_df = pd.read_csv("employee_data.csv")
+if "Attrition" in raw_df.columns and "Department" in raw_df.columns:
+    print("\n 📉 Attrition Rate by Department:")
+    dept_attrition = (
+        raw_df.groupby("Department")["Attrition"]
+        .apply(lambda x: (x == "Yes").mean() * 100)
+        .sort_values(ascending=False)
+    )
+    for dept, rate in dept_attrition.items():
+        print(f"  {dept}: {rate:.1f}%")
+
 plt.show()

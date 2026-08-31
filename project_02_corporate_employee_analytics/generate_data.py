@@ -19,11 +19,21 @@ data = {
     "Years_Experience": np.random.choice(exp_choices, size=n_rows, p=exp_probs),
     "Salary": np.random.randint(40000, 120000, size=n_rows),
     "Remote_Worker": np.random.choice(["Yes", "No"], size=n_rows),
-    "Performance_Score": np.random.choice(["Low", "Medium", "High"], size=n_rows)
+    "Performance_Score": np.random.choice(["Low", "Medium", "High"], size=n_rows),
 }
 
-# Duplicate some rows intentionally to make it messy
 df = pd.DataFrame(data)
+
+# Derive attrition from workforce signals (realistic HR pattern)
+attrition_prob = (
+    0.10
+    + (df["Remote_Worker"] == "No").astype(float) * 0.06
+    + (df["Salary"] < 50000).astype(float) * 0.14
+    + (df["Years_Experience"].fillna(0) < 2).astype(float) * 0.08
+)
+df["Attrition"] = np.where(np.random.rand(n_rows) < attrition_prob, "Yes", "No")
+
+# Duplicate some rows intentionally to make it messy
 df = pd.concat([df, df.iloc[:15]], ignore_index=True)
 
 # Save to file system

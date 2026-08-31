@@ -26,7 +26,14 @@ print("✅ Missing continuous features imputed successfully.")
 # 4. Advanced Transformation: One-Hot Encoding Text Columns
 # ML models cannot read raw strings like "IT", "HR", "Sales". We convert them to 0s and 1s.
 print("\n🔄 Converting categorical attributes to numerical matrices...")
+attrition_col = df["Attrition"] if "Attrition" in df.columns else None
+performance_col = df["Performance_Score"] if "Performance_Score" in df.columns else None
 df_cleaned = pd.get_dummies(df, columns=["Department", "Remote_Worker"], dtype=int)
+if performance_col is not None:
+    perf_dummies = pd.get_dummies(performance_col, prefix="Performance", dtype=int)
+    df_cleaned = pd.concat([df_cleaned.drop(columns=["Performance_Score"], errors="ignore"), perf_dummies], axis=1)
+if attrition_col is not None:
+    df_cleaned["Attrition"] = attrition_col.values
 
 print("\n--- PROCESSED DATAFRAME PREVIEW ---")
 print(df_cleaned.head())

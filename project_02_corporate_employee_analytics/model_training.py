@@ -10,15 +10,12 @@ print("🚀 DAY 10: Training Advanced Ensemble Pipeline...")
 # 1. Load the cleaned dataset directly from your workspace
 df = pd.read_csv("employee_data_cleaned.csv")
 
-# 2. Automatically locate the Target Label (y)
-target_candidates = [col for col in df.columns if "performance" in col.lower() or "rating" in col.lower() or "target" in col.lower() or "score" in col.lower()]
+# 2. Use Attrition as the primary HR prediction target
+if "Attrition" not in df.columns:
+    raise ValueError("Attrition column missing. Re-run generate_data.py and data_cleaning.py first.")
 
-if target_candidates:
-    target_col = target_candidates[0]
-else:
-    target_col = df.columns[-1]  # Fallback to the last column
-
-print(f"🎯 Target column detected: '{target_col}'")
+target_col = "Attrition"
+print(f"🎯 Target column: '{target_col}'")
 
 # 3. Separate Features (X) and Target Label (y)
 # Drop both the target column AND non-numeric ID columns
@@ -36,8 +33,9 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # 5. Initialize & Train Random Forest Ensemble Model
 rf_model = RandomForestClassifier(
-    n_estimators=100, 
-    max_depth=5, 
+    n_estimators=100,
+    max_depth=5,
+    class_weight="balanced",
     random_state=42
 )
 rf_model.fit(X_train, y_train)

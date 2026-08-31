@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 import string
+import json
 import joblib
 
 from sklearn.model_selection import train_test_split
@@ -60,4 +61,12 @@ print("\nClassification Report:\n", classification_report(y_test, y_pred))
 # 7. Save Artifacts
 joblib.dump(model, 'spam_model.pkl')
 joblib.dump(tfidf, 'tfidf_vectorizer.pkl')
-print("\n💾 Model and Vectorizer saved successfully!")
+
+metrics = {
+    "accuracy": float(accuracy_score(y_test, y_pred)),
+    "vocab_size": len(tfidf.vocabulary_),
+}
+with open("model_metrics.json", "w", encoding="utf-8") as f:
+    json.dump(metrics, f, indent=2)
+
+print("\n💾 Model, vectorizer, and metrics saved successfully!")

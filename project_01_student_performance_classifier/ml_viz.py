@@ -27,9 +27,7 @@ tree_model.fit(x_train, y_train)
 sns.scatterplot(data=df, x="Hours_Studied", y="Sleep_Hours", hue="Passed", style="Passed", s=100)
 
 # 3. Calculate and plot the Decision Boundary line
-import numpy as np 
-
-# Getting the weights from our traning model 
+# Getting the weights from our training model 
 intercept = model.intercept_[0]
 coef_hours, coef_sleep = model.coef_[0]
 
@@ -44,8 +42,6 @@ plt.plot(x_values, y_values, color='black', linestyle='--', label='Decision Boun
 plt.legend()
 
 # 4. Visualize the Decision Tree Boundary using a colored grid
-import numpy as np
-
 # Create a mesh grid of points covering the entire graph area
 x_min, x_max = df["Hours_Studied"].min() - 1, df["Hours_Studied"].max() + 1
 y_min, y_max = df["Sleep_Hours"].min() - 1, df["Sleep_Hours"].max() + 1

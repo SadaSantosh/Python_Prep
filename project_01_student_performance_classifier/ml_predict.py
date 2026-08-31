@@ -61,15 +61,23 @@ while True:
             sleep = float(input("Enter Sleep Hours (0 to 10): "))
             attendance = float(input("Enter Attendance Percentage (0 to 100): "))
 
-            custom_student = pd.DataFrame([[hours, sleep, attendance]], 
+            if not (0 <= hours <= 10 and 0 <= sleep <= 10 and 0 <= attendance <= 100):
+                print("\n❌ Error: Values must be within valid ranges (Hours/Sleep: 0-10, Attendance: 0-100).")
+                continue
+
+            custom_student = pd.DataFrame([[hours, sleep, attendance]],
                                            columns=["Hours_Studied", "Sleep_Hours", "Attendance"])
 
             lr_pred = lr_model.predict(custom_student)[0]
             tree_pred = tree_model.predict(custom_student)[0]
+            lr_prob = lr_model.predict_proba(custom_student)[0]
+            tree_prob = tree_model.predict_proba(custom_student)[0]
+            lr_pass_idx = list(lr_model.classes_).index("Yes")
+            tree_pass_idx = list(tree_model.classes_).index("Yes")
 
             print("\n================ RESULTS ================")
-            print(f"📐 Logistic Regression Predicts: {lr_pred}")
-            print(f"🧱 Decision Tree Classifier Predicts: {tree_pred}")
+            print(f"📐 Logistic Regression Predicts: {lr_pred} (Pass probability: {lr_prob[lr_pass_idx]*100:.1f}%)")
+            print(f"🧱 Decision Tree Classifier Predicts: {tree_pred} (Pass probability: {tree_prob[tree_pass_idx]*100:.1f}%)")
             print("=========================================")
 
         except ValueError:
