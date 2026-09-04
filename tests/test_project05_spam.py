@@ -5,7 +5,6 @@ import re
 import string
 import json
 import numpy as np
-import pandas as pd
 import pytest
 import joblib
 
@@ -70,7 +69,6 @@ class TestNLPPipeline:
         text = self.clean_text("Hey, are we still meeting for lunch today?")
         vec = tfidf.transform([text])
         pred = model.predict(vec)[0]
-        proba = model.predict_proba(vec)[0]
         assert pred == "ham", f"Expected 'ham', got '{pred}'"
 
     def test_spam_classification(self, artifacts):

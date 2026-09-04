@@ -1,64 +1,68 @@
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score
+"""Train a Random Forest attrition classifier and export it for reuse."""
+
+import os
+
 import joblib
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
 
-print("🚀 DAY 10: Training Advanced Ensemble Pipeline...")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CLEAN_PATH = os.path.join(BASE_DIR, "employee_data_cleaned.csv")
+MODEL_PATH = os.path.join(BASE_DIR, "random_forest_model.pkl")
 
-# 1. Load the cleaned dataset directly from your workspace
-df = pd.read_csv("employee_data_cleaned.csv")
+print("=" * 60)
+print("EMPLOYEE ATTRITION MODEL TRAINING")
+print("=" * 60)
 
-# 2. Use Attrition as the primary HR prediction target
+# 1. Load the cleaned dataset
+df = pd.read_csv(CLEAN_PATH)
+
+# 2. Use attrition as the prediction target
 if "Attrition" not in df.columns:
     raise ValueError("Attrition column missing. Re-run generate_data.py and data_cleaning.py first.")
 
 target_col = "Attrition"
-print(f"🎯 Target column: '{target_col}'")
+print(f"Target column: '{target_col}'")
 
-# 3. Separate Features (X) and Target Label (y)
-# Drop both the target column AND non-numeric ID columns
+# 3. Separate features from the target; drop identifiers and leftover text columns
 cols_to_drop = [target_col]
 if "Employee_ID" in df.columns:
     cols_to_drop.append("Employee_ID")
 
-# Drop any remaining non-numeric columns that weren't encoded
 for col in df.drop(columns=cols_to_drop).columns:
-    if df[col].dtype == 'object':
+    if df[col].dtype == "object":
         cols_to_drop.append(col)
 
-X = df.drop(columns=cols_to_drop)  # Predictors (numbers only)
-y = df[target_col]                 # Target Class
+x = df.drop(columns=cols_to_drop)
+y = df[target_col]
 
-# 4. Train / Test Split
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+# 4. Train/test split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-# 5. Initialize & Train Random Forest Ensemble Model
+# 5. Train the ensemble with class weights to counter class imbalance
 rf_model = RandomForestClassifier(
     n_estimators=100,
     max_depth=5,
     class_weight="balanced",
-    random_state=42
+    random_state=42,
 )
-rf_model.fit(X_train, y_train)
+rf_model.fit(x_train, y_train)
 
-# 6. Model Inference & Evaluation
-y_pred = rf_model.predict(X_test)
+# 6. Evaluate on the held-out test set
+y_pred = rf_model.predict(x_test)
 acc = accuracy_score(y_test, y_pred)
 
-print(f"\n✅ Model Training Complete!")
-print(f"🎯 Test Accuracy: {acc * 100:.2f}%\n")
-print("📊 Classification Report:")
+print(f"\nTest accuracy: {acc * 100:.2f}%\n")
+print("Classification report:")
 print(classification_report(y_test, y_pred))
 
-# 7. Feature Importance Extraction
-importances = pd.Series(rf_model.feature_importances_, index=X.columns).sort_values(ascending=False)
-print("💡 Top 3 Predictive Features:")
+# 7. Report the strongest predictive features
+importances = pd.Series(rf_model.feature_importances_, index=x.columns).sort_values(ascending=False)
+print("\nTop 3 predictive features:")
 print(importances.head(3))
 
-# 8. Pipeline Export
-joblib.dump(rf_model, "random_forest_model.pkl")
-print("\n💾 Saved production pipeline as 'random_forest_model.pkl'!")
+# 8. Export the trained model
+joblib.dump(rf_model, MODEL_PATH)
+print(f"Saved production pipeline as '{MODEL_PATH}'.")

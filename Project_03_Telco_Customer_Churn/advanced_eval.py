@@ -1,6 +1,6 @@
 import os
+
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
@@ -48,10 +48,10 @@ for name, model in models.items():
     preds = model.predict(X_test)
     results.append({
         "Model": name,
-        "Accuracy": f"{accuracy_score(y_test, preds)*100:.2f}%",
-        "Recall (Churn)": f"{recall_score(y_test, preds)*100:.2f}%",
-        "Precision": f"{precision_score(y_test, preds)*100:.2f}%",
-        "F1-Score": f"{f1_score(y_test, preds)*100:.2f}%"
+        "Accuracy": f"{accuracy_score(y_test, preds) * 100:.2f}%",
+        "Recall (Churn)": f"{recall_score(y_test, preds) * 100:.2f}%",
+        "Precision": f"{precision_score(y_test, preds) * 100:.2f}%",
+        "F1-Score": f"{f1_score(y_test, preds) * 100:.2f}%"
     })
 
 comparison_df = pd.DataFrame(results)

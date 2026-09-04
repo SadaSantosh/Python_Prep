@@ -1,72 +1,85 @@
-import pandas as pd
-import numpy as np
+"""Visualize logistic regression and decision tree boundaries on student data.
+
+The scatter plot and both decision surfaces are drawn on the two most
+interpretable features (Hours_Studied x Sleep_Hours). Boundary models are fit
+on that 2D plane separately from the full 3-feature models used for the
+accuracy comparison, so each visual is mathematically honest.
+"""
+
+import os
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score
 
-# 1. Load the expanded dataset
-df = pd.read_csv("student_data.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(BASE_DIR, "student_data.csv")
 
-# Fill any missing values just like before
-df["Hours_Studied"] = df["Hours_Studied"].fillna(df["Hours_Studied"].mean())
+FEATURE_COLS = ["Hours_Studied", "Sleep_Hours", "Attendance"]
+PLANE_COLS = ["Hours_Studied", "Sleep_Hours"]
 
-# Training the model on the data 
-x = df[["Hours_Studied", "Sleep_Hours", "Attendance"]]
-y = df["Passed"]
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-model = LogisticRegression()
-model.fit(x_train, y_train)
+def main():
+    df = pd.read_csv(DATA_PATH)
+    df["Hours_Studied"] = df["Hours_Studied"].fillna(df["Hours_Studied"].mean())
 
-tree_model = DecisionTreeClassifier(max_depth=3)
-tree_model.fit(x_train, y_train)
+    x = df[FEATURE_COLS]
+    y = df["Passed"]
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-# 2. Create the scatter plot
-sns.scatterplot(data=df, x="Hours_Studied", y="Sleep_Hours", hue="Passed", style="Passed", s=100)
+    # Full models used for the accuracy comparison
+    lr_model = LogisticRegression()
+    lr_model.fit(x_train, y_train)
 
-# 3. Calculate and plot the Decision Boundary line
-# Getting the weights from our training model 
-intercept = model.intercept_[0]
-coef_hours, coef_sleep = model.coef_[0]
+    tree_model = DecisionTreeClassifier(max_depth=3)
+    tree_model.fit(x_train, y_train)
 
-# Creating X values spanning across our graph (from min hours to max hours studied)
-x_values = np.linspace(df["Hours_Studied"].min(), df["Hours_Studied"].max(), 100)
+    # Scatter of actual students colored by outcome
+    sns.scatterplot(data=df, x=PLANE_COLS[0], y=PLANE_COLS[1], hue="Passed", style="Passed", s=100)
 
-# Calculating the matching Y values (Sleep_Hours) using the logistic regression boundary formula
-y_values = -(intercept + coef_hours * x_values) / coef_sleep
+    # 2D logistic regression boundary
+    plane_x = df[PLANE_COLS]
+    lr_plane = LogisticRegression()
+    lr_plane.fit(plane_x, y)
 
-# Plotting the boundary line 
-plt.plot(x_values, y_values, color='black', linestyle='--', label='Decision Boundary')
-plt.legend()
+    x_vals = np.linspace(plane_x["Hours_Studied"].min(), plane_x["Hours_Studied"].max(), 100)
+    y_vals = -(lr_plane.intercept_[0] + lr_plane.coef_[0][0] * x_vals) / lr_plane.coef_[0][1]
+    plt.plot(x_vals, y_vals, color="black", linestyle="--", label="Logistic Boundary")
+    plt.legend()
 
-# 4. Visualize the Decision Tree Boundary using a colored grid
-# Create a mesh grid of points covering the entire graph area
-x_min, x_max = df["Hours_Studied"].min() - 1, df["Hours_Studied"].max() + 1
-y_min, y_max = df["Sleep_Hours"].min() - 1, df["Sleep_Hours"].max() + 1
-xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1))
+    # 2D decision tree boundary rendered as a shaded region
+    tree_plane = DecisionTreeClassifier(max_depth=3)
+    tree_plane.fit(plane_x, y)
 
-# Predict the outcome for every single point on the grid using the Tree model
-Z = tree_model.predict(np.c_[xx.ravel(), yy.ravel()])
-Z = Z.reshape(xx.shape)
+    x_min = plane_x["Hours_Studied"].min() - 1
+    x_max = plane_x["Hours_Studied"].max() + 1
+    y_min = plane_x["Sleep_Hours"].min() - 1
+    y_max = plane_x["Sleep_Hours"].max() + 1
+    xx, yy = np.meshgrid(
+        np.arange(x_min, x_max, 0.1),
+        np.arange(y_min, y_max, 0.1),
+    )
 
-# Convert string predictions ('Yes'/'No') to numbers for background shading
-Z_num = np.where(Z == 'Yes', 1, 0)
+    z = tree_plane.predict(np.c_[xx.ravel(), yy.ravel()])
+    z_num = np.where(z == "Yes", 1, 0)
+    plt.contourf(xx, yy, z_num.reshape(xx.shape), alpha=0.2, cmap="coolwarm")
 
-# Draw the colored background blocks (Alpha makes it transparent so we see the points)
-plt.contourf(xx, yy, Z_num, alpha=0.2, cmap='coolwarm')
+    # Report accuracy of the full 3-feature models on the held-out set
+    lr_preds = lr_model.predict(x_test)
+    tree_preds = tree_model.predict(x_test)
+    print(f"Logistic Regression accuracy: {accuracy_score(y_test, lr_preds):.2%}")
+    print(f"Decision Tree accuracy:       {accuracy_score(y_test, tree_preds):.2%}")
 
-# Generating predictions on the test set
-lr_preds = model.predict(x_test)
-tree_preds = tree_model.predict(x_test)
+    plt.title("Student Performance: Study Hours vs Sleep Hours")
+    plt.xlabel("Hours Studied")
+    plt.ylabel("Hours of Sleep")
+    plt.show()
 
-# Printing the accuracy scores 
-print("Logistic Regression Accuracy:", accuracy_score(y_test, lr_preds))
-print("Decision Tree Accuracy:", accuracy_score(y_test, tree_preds))
 
-plt.title("Student Performance: Study Hours vs Sleep Hours")
-plt.xlabel("Hours Studied")
-plt.ylabel("Hours of Sleep")
-plt.show()
+if __name__ == "__main__":
+    main()

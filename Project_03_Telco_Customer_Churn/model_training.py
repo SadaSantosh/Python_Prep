@@ -80,4 +80,4 @@ best_name, (best_model, best_recall) = max(models.items(), key=lambda item: item
 
 model_path = os.path.join(BASE_DIR, "best_churn_model.pkl")
 joblib.dump(best_model, model_path)
-print(f"\n💾 Exported best model ({best_name}, recall={best_recall*100:.2f}%) to '{model_path}'!")
+print(f"\n💾 Exported best model ({best_name}, recall={best_recall * 100:.2f}%) to '{model_path}'!")

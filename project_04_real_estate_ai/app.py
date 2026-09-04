@@ -8,6 +8,17 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
+def build_scatter_map(df, **kwargs):
+    """Render a bubble map. px.scatter_mapbox was removed in plotly 7,
+    so prefer px.scatter_map (MapLibre) and fall back for older plotly."""
+    scatter = getattr(px, "scatter_map", None)
+    if scatter is not None:
+        kwargs.setdefault("map_style", kwargs.pop("mapbox_style", "carto-positron"))
+        return scatter(df, **kwargs)
+    return px.scatter_mapbox(df, **kwargs)
+
+
 st.set_page_config(
     page_title="ValuaAI",
     page_icon="🏠",
@@ -15,86 +26,197 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-MINIMAL_CSS = """
+NEUMORPHIC_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    .stApp {
-        background-color: #fafafa;
-        font-family: 'Inter', sans-serif;
+    :root {
+        --neu-bg: #e0e0e0;
+        --neu-soft: #eaeaea;
+        --neu-panel: #e6e6e6;
+        --neu-light: #ffffff;
+        --neu-shadow: #c0c0c0;
+        --neu-text: #2b2b2b;
+        --neu-muted: #565656;
+        --neu-radius: 15px;
     }
-    .stApp::before {
-        content: '';
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80') center/cover no-repeat;
-        opacity: 0.05;
-        pointer-events: none;
-        z-index: 0;
-    }
-    .stApp > * { position: relative; z-index: 1; }
 
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
+        background-color: var(--neu-bg) !important;
+        color: var(--neu-text);
+        font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+    }
+    [data-testid="stHeader"] { background: transparent !important; }
+    .block-container { padding-top: 2.4rem; padding-bottom: 3rem; max-width: 1180px; }
+
+    h1, h2, h3, h4 {
+        color: var(--neu-text) !important;
+        font-weight: 650 !important;
+        letter-spacing: -0.02em !important;
+    }
+    [data-testid="stWidgetLabel"] p {
+        color: var(--neu-muted) !important;
+        font-weight: 500 !important;
+        font-size: 0.92rem !important;
+    }
+    .stCaption, [data-testid="stCaptionContainer"] p { color: #6a6a6a !important; }
+
+    /* ---------- Sidebar ---------- */
     [data-testid="stSidebar"] {
-        background: #ffffff !important;
-        border-right: 1px solid #e5e7eb !important;
+        background-color: var(--neu-bg) !important;
+        border-right: none !important;
     }
-    [data-testid="stSidebar"] [data-testid="stMarkdown"] {
-        color: #111827 !important;
-    }
+    [data-testid="stSidebarContent"] { padding: 0.6rem 0.5rem 2rem 0.5rem; }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 { color: var(--neu-text) !important; }
 
-    h1, h2, h3 {
-        color: #111827 !important;
-        font-weight: 600 !important;
-        letter-spacing: -0.025em !important;
-    }
-    p, label, .stMarkdown { color: #374151 !important; }
-
+    /* ---------- Metric cards ---------- */
     div[data-testid="stMetric"] {
-        background: #ffffff !important;
-        border: 1px solid #e5e7eb !important;
-        border-radius: 12px !important;
-        padding: 20px 24px !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
-    }
-
-    .stButton > button {
-        background: #111827 !important;
-        color: #ffffff !important;
+        background: linear-gradient(145deg, var(--neu-soft), #d6d6d6) !important;
         border: none !important;
-        border-radius: 8px !important;
-        font-weight: 500 !important;
-        padding: 10px 24px !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 1.1rem 1.3rem !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
     }
-    .stButton > button:hover {
-        background: #1f2937 !important;
+    div[data-testid="stMetric"] [data-testid="stMetricLabel"] p {
+        color: var(--neu-muted) !important;
+        font-weight: 600 !important;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] p {
+        color: var(--neu-text) !important;
+        font-weight: 700 !important;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricDelta"] p { font-weight: 600 !important; }
+
+    /* ---------- Buttons (raised / extruded) ---------- */
+    [data-testid="stButton"] > button,
+    [data-testid="stDownloadButton"] > button,
+    [data-testid="stFormSubmitButton"] > button {
+        background: linear-gradient(145deg, var(--neu-soft), #d4d4d4) !important;
+        color: var(--neu-text) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        font-weight: 600 !important;
+        box-shadow: 7px 7px 14px var(--neu-shadow), -7px -7px 14px var(--neu-light) !important;
+        transition: box-shadow 0.18s ease !important;
+    }
+    [data-testid="stButton"] > button:hover,
+    [data-testid="stDownloadButton"] > button:hover,
+    [data-testid="stFormSubmitButton"] > button:hover {
+        box-shadow: 5px 5px 10px var(--neu-shadow), -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stButton"] > button:active,
+    [data-testid="stDownloadButton"] > button:active,
+    [data-testid="stFormSubmitButton"] > button:active {
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
     }
 
-    [data-baseweb="tab-list"] {
-        background: #f3f4f6 !important;
-        border-radius: 10px !important;
-        padding: 4px !important;
-        border: 1px solid #e5e7eb !important;
-    }
-    [data-baseweb="tab"] {
-        border-radius: 8px !important;
-        font-weight: 500 !important;
-    }
-    [aria-selected="true"] {
-        background: #ffffff !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
-    }
-
-    .stDataFrame {
-        border-radius: 10px !important;
+    /* ---------- Inputs (inset / pressed) ---------- */
+    [data-testid="stNumberInputContainer"],
+    [data-testid="stTextAreaRootElement"],
+    [data-testid="stTextInputRootElement"],
+    [data-testid="stDateInput"] [role="group"] {
+        background-color: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
         overflow: hidden !important;
-        border: 1px solid #e5e7eb !important;
+    }
+    [data-testid="stTextInput"] input,
+    [data-testid="stTextArea"] textarea,
+    [data-testid="stNumberInput"] input,
+    [data-testid="stDateInput"] input {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: var(--neu-text) !important;
+    }
+    [data-testid="stNumberInputStepDown"],
+    [data-testid="stNumberInputStepUp"] { background: transparent !important; color: var(--neu-muted) !important; }
+
+    /* Select (react-aria combobox) */
+    [data-testid="stSelectbox"] [role="group"] {
+        background-color: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stSelectbox"] input {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: var(--neu-text) !important;
+    }
+    [data-testid="stSelectbox"] button {
+        background: transparent !important;
+        border: none !important;
+        color: var(--neu-muted) !important;
     }
 
-    .block-container { padding-top: 2rem; max-width: 1100px; }
+    [data-testid="stCheckbox"] label { color: var(--neu-text) !important; }
+
+    /* ---------- Tabs ---------- */
+    [data-testid="stTabs"] [role="tablist"] {
+        background: #d3d3d3 !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 0.35rem !important;
+        box-shadow: inset 3px 3px 7px #bebebe, inset -3px -3px 7px #f2f2f2 !important;
+        gap: 0.35rem !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"] {
+        border-radius: var(--neu-radius) !important;
+        color: var(--neu-muted) !important;
+        font-weight: 500 !important;
+        transition: all 0.18s ease !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] {
+        background: linear-gradient(145deg, #ededed, #d5d5d5) !important;
+        color: var(--neu-text) !important;
+        font-weight: 600 !important;
+        box-shadow: 5px 5px 10px var(--neu-shadow), -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"] .react-aria-SelectionIndicator { display: none !important; }
+
+    /* ---------- Surfaces: uploader / dataframe / charts / alerts / expanders ---------- */
+    [data-testid="stFileUploaderDropzone"] {
+        background-color: var(--neu-panel) !important;
+        border: 1px dashed #aaaaaa !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 4px 4px 8px var(--neu-shadow), inset -4px -4px 8px var(--neu-light) !important;
+        color: var(--neu-muted) !important;
+    }
+    [data-testid="stDataFrame"] {
+        background: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        overflow: hidden !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
+    }
+    [data-testid="stPlotlyChart"] {
+        background: var(--neu-panel) !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 0.4rem 0.6rem !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
+    }
+    [data-testid="stAlert"] {
+        border-radius: var(--neu-radius) !important;
+        box-shadow: 6px 6px 12px rgba(150, 150, 150, 0.35), -6px -6px 12px var(--neu-light) !important;
+    }
+    [data-testid="stExpander"] {
+        background: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        overflow: hidden !important;
+        box-shadow: 6px 6px 12px var(--neu-shadow), -6px -6px 12px var(--neu-light) !important;
+    }
+    [data-testid="stExpander"] summary { color: var(--neu-text) !important; font-weight: 600 !important; }
+
+    hr { border-color: rgba(90, 90, 90, 0.25) !important; }
 </style>
 """
-st.markdown(MINIMAL_CSS, unsafe_allow_html=True)
+st.markdown(NEUMORPHIC_CSS, unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -134,7 +256,13 @@ default_bathrooms = 2
 default_location_score = 7
 default_age = 5
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Valuation", "Batch Processing", "Market Map", "Mortgage Calculator", "Comparable Analysis"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "Valuation",
+    "Batch Processing",
+    "Market Map",
+    "Mortgage Calculator",
+    "Comparable Analysis",
+])
 
 with tab1:
     col1, col2 = st.columns(2)
@@ -154,7 +282,7 @@ with tab1:
         extra_baths = r2.slider("Added bathrooms", 0, 3, 1)
         location_boost = r3.slider("Location upgrade", 0, 3, 1)
 
-    if st.button("Estimate value", use_container_width=True):
+    if st.button("Estimate value", width="stretch"):
         base_df = pd.DataFrame([{
             "sqft": sqft, "bedrooms": bedrooms, "bathrooms": bathrooms,
             "age": age, "location_score": location_score,
@@ -194,7 +322,7 @@ with tab1:
             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
             font_color="#374151", margin=dict(l=0, r=0, t=20, b=0),
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
 with tab2:
     st.subheader("Batch Valuation")
@@ -210,7 +338,7 @@ with tab2:
             batch_df["Upper_Bound"] = preds + (mae * multiplier)
 
             st.subheader("Results preview")
-            st.dataframe(batch_df.head(10), use_container_width=True)
+            st.dataframe(batch_df.head(10), width="stretch")
 
             k1, k2, k3 = st.columns(3)
             k1.metric("Listings", len(batch_df))
@@ -221,7 +349,7 @@ with tab2:
                 "Download CSV",
                 data=batch_df.to_csv(index=False).encode("utf-8"),
                 file_name="valuaai_batch_report.csv",
-                use_container_width=True,
+                width="stretch",
             )
         else:
             st.error(f"Missing columns. Required: {req_cols}")
@@ -244,7 +372,7 @@ with tab3:
         model.predict(scaler.transform(geo_df[req_cols])) * multiplier
     )
 
-    fig_map = px.scatter_mapbox(
+    fig_map = build_scatter_map(
         geo_df, lat="lat", lon="lon", size="Valuation", color="Valuation",
         color_continuous_scale="Greys", size_max=15, zoom=10,
         mapbox_style="carto-positron",
@@ -254,7 +382,7 @@ with tab3:
         paper_bgcolor="rgba(0,0,0,0)", font_color="#374151",
         margin=dict(l=0, r=0, t=40, b=0),
     )
-    st.plotly_chart(fig_map, use_container_width=True)
+    st.plotly_chart(fig_map, width="stretch")
 
 with tab4:
     st.subheader("Mortgage Calculator")
@@ -262,13 +390,19 @@ with tab4:
 
     mc1, mc2 = st.columns(2)
     with mc1:
-        prop_value = st.number_input("Property value ($)", min_value=50000, max_value=5000000, value=500000, step=10000, key="mort_prop")
+        prop_value = st.number_input(
+            "Property value ($)", min_value=50000, max_value=5000000,
+            value=500000, step=10000, key="mort_prop",
+        )
         down_payment_pct = st.slider("Down payment (%)", 0, 50, 20, key="mort_down")
         loan_term_years = st.selectbox("Loan term", [15, 20, 30], key="mort_term")
     with mc2:
         interest_rate = st.slider("Interest rate (%)", 1.0, 10.0, 6.5, 0.1, key="mort_rate")
         property_tax_rate = st.slider("Annual property tax rate (%)", 0.0, 3.0, 1.1, 0.1, key="mort_tax")
-        insurance_annual = st.number_input("Annual insurance ($)", min_value=0, max_value=10000, value=1500, step=100, key="mort_ins")
+        insurance_annual = st.number_input(
+            "Annual insurance ($)", min_value=0, max_value=10000,
+            value=1500, step=100, key="mort_ins",
+        )
 
     down_payment = prop_value * (down_payment_pct / 100)
     loan_amount = prop_value - down_payment
@@ -276,7 +410,10 @@ with tab4:
     num_payments = loan_term_years * 12
 
     if monthly_rate > 0:
-        monthly_mortgage = loan_amount * (monthly_rate * (1 + monthly_rate)**num_payments) / ((1 + monthly_rate)**num_payments - 1)
+        monthly_mortgage = loan_amount * (
+            (monthly_rate * (1 + monthly_rate) ** num_payments)
+            / ((1 + monthly_rate) ** num_payments - 1)
+        )
     else:
         monthly_mortgage = loan_amount / num_payments
 
@@ -302,10 +439,14 @@ with tab4:
         font_color="#374151", margin=dict(l=0, r=0, t=20, b=0),
         showlegend=True,
     )
-    st.plotly_chart(fig_pie, use_container_width=True)
+    st.plotly_chart(fig_pie, width="stretch")
 
     total_interest = (monthly_mortgage * num_payments) - loan_amount
-    st.info(f"**Total interest over {loan_term_years} years:** {curr_prefix}{total_interest:,.0f}  |  **Total cost:** {curr_prefix}{(loan_amount + total_interest + down_payment + insurance_annual * loan_term_years):,.0f}")
+    st.info(
+        f"**Total interest over {loan_term_years} years:** {curr_prefix}{total_interest:,.0f}"
+        f"  |  **Total cost:** {curr_prefix}"
+        f"{(loan_amount + total_interest + down_payment + insurance_annual * loan_term_years):,.0f}"
+    )
 
 with tab5:
     st.subheader("Comparable Property Analysis")
@@ -325,10 +466,14 @@ with tab5:
         "age": np.random.randint(0, 30, num_comps),
         "location_score": np.random.randint(max(1, comp_location - 2), min(10, comp_location + 3), num_comps),
     })
-    comps["Valuation"] = model.predict(scaler.transform(comps[["sqft", "bedrooms", "bathrooms", "age", "location_score"]])) * multiplier
+    comp_features = comps[["sqft", "bedrooms", "bathrooms", "age", "location_score"]]
+    comps["Valuation"] = model.predict(scaler.transform(comp_features)) * multiplier
     comps["Price_per_sqft"] = comps["Valuation"] / comps["sqft"]
 
-    target_input = pd.DataFrame([{"sqft": comp_sqft, "bedrooms": comp_bedrooms, "bathrooms": comp_bathrooms, "age": default_age, "location_score": comp_location}])
+    target_input = pd.DataFrame([{
+        "sqft": comp_sqft, "bedrooms": comp_bedrooms, "bathrooms": comp_bathrooms,
+        "age": default_age, "location_score": comp_location,
+    }])
     target_val = model.predict(scaler.transform(target_input))[0] * multiplier
     target_ppsf = target_val / comp_sqft
 
@@ -346,16 +491,19 @@ with tab5:
     else:
         st.info(f"Your property is {diff_pct:+.1f}% below comparable average - potential value opportunity")
 
-    st.dataframe(comps.sort_values("Valuation", ascending=False).reset_index(drop=True), use_container_width=True)
+    st.dataframe(comps.sort_values("Valuation", ascending=False).reset_index(drop=True), width="stretch")
 
     fig_comp = px.scatter(comps, x="sqft", y="Valuation", color="Price_per_sqft",
                           color_continuous_scale="Greys", hover_data=["bedrooms", "bathrooms"])
-    fig_comp.add_scatter(x=[comp_sqft], y=[target_val], mode="markers", marker=dict(size=15, color="red", symbol="star"), name="Your Property")
+    fig_comp.add_scatter(
+        x=[comp_sqft], y=[target_val], mode="markers",
+        marker=dict(size=15, color="red", symbol="star"), name="Your Property",
+    )
     fig_comp.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
         font_color="#374151", margin=dict(l=0, r=0, t=20, b=0),
     )
-    st.plotly_chart(fig_comp, use_container_width=True)
+    st.plotly_chart(fig_comp, width="stretch")
 
 st.divider()
 st.caption("ValuaAI | Sada Santosh Kalmath")

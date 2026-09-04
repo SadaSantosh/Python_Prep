@@ -24,7 +24,7 @@ Python_Prep/
 │   └── requirements.txt         # Project-specific dependencies
 │
 ├── Project_03_Telco_Customer_Churn/              # Streamlit: Churn prediction engine
-│   ├── app.py                   # Streamlit frontend (Minimalist UI)
+│   ├── app.py                   # Streamlit frontend (Neumorphism UI)
 │   ├── data_preprocessing.py    # Feature engineering & scaling
 │   ├── model_training.py        # SMOTE + XGBoost/RF/LR training
 │   ├── advanced_eval.py         # Model comparison & feature importance
@@ -35,14 +35,14 @@ Python_Prep/
 │   └── *.pkl, *.csv             # Model artifacts & data
 │
 ├── project_04_real_estate_ai/                    # Streamlit: Property valuation
-│   ├── app.py                   # Streamlit frontend (Minimalist UI)
+│   ├── app.py                   # Streamlit frontend (Neumorphism UI)
 │   ├── train_model.py           # Random Forest regression training
 │   ├── requirements.txt         # Project-specific dependencies
 │   ├── .streamlit/config.toml   # Streamlit theme config
 │   └── *.pkl, *.json            # Model artifacts & metrics
 │
 ├── project_05_spam_phishing_detector/            # Streamlit: Spam/phishing detection
-│   ├── app.py                   # Streamlit frontend (Minimalist UI)
+│   ├── app.py                   # Streamlit frontend (Neumorphism UI)
 │   ├── train_model.py           # TF-IDF + Naive Bayes training
 │   ├── requirements.txt         # Project-specific dependencies
 │   ├── .streamlit/config.toml   # Streamlit theme config
@@ -52,7 +52,8 @@ Python_Prep/
 │   ├── conftest.py              # Shared pytest fixtures & sys.path setup
 │   ├── test_project03_churn.py  # 11 tests: model loading, predictions, preprocessing
 │   ├── test_project04_realestate.py  # 10 tests: artifacts, predictions, features
-│   └── test_project05_spam.py   # 14 tests: NLP pipeline, URL heuristics
+│   ├── test_project05_spam.py   # 14 tests: NLP pipeline, URL heuristics
+│   └── test_app_smoke.py        # 3 smoke tests: headless boot of each Streamlit app
 │
 ├── .github/workflows/ci.yml    # GitHub Actions CI/CD pipeline
 ├── requirements.txt             # Global dependencies
@@ -153,19 +154,23 @@ pytest tests/ --cov=. --cov-report=term-missing
 | `test_project03_churn.py` | 11 | Model/scaler loading, prediction shape & values, probability sums, null checks, preprocessing |
 | `test_project04_realestate.py` | 10 | Artifact loading, R² validation, single/batch predictions, feature importances |
 | `test_project05_spam.py` | 14 | Model/TF-IDF loading, ham/spam classification, probabilities, URL TLD/IP/length detection |
+| `test_app_smoke.py` | 3 | Headless boot of each Streamlit app: no exceptions/errors, title + theme present |
+
+**Total: 38 tests**
 
 ---
 
-## 🎨 UI Design — Minimalist
+## 🎨 UI Design — Neumorphism
 
-All Streamlit apps (Projects 03, 04, 05) use a **Minimalist** UI with:
-- Clean white sidebar with subtle border
-- White metric cards with soft shadows
-- Dark buttons with clean rounded corners
-- Subtle background image overlay
+All Streamlit apps (Projects 03, 04, 05) use a **Neumorphism** design system with:
+- Soft light-gray canvas (`#e0e0e0`) matching the background
+- Extruded 3D surfaces via dual box-shadows (light top-left, dark bottom-right)
+- Inset, pressed-in look for text inputs and selects
+- `15px` border radius on cards, inputs, buttons, and tabs
+- High-contrast charcoal text (`#2b2b2b`) for readability
 - Inter font from Google Fonts
 
-Theme configs are in `.streamlit/config.toml` for each Streamlit project.
+The shared styles are injected per app with `st.markdown(..., unsafe_allow_html=True)`; theme fallbacks live in each project's `.streamlit/config.toml`.
 
 ---
 
@@ -175,7 +180,8 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push/PR t
 
 1. **Test Job** — Python 3.10/3.11/3.12 matrix, syntax validation of all `.py` files, pytest execution
 2. **Lint Job** — flake8 static analysis (non-blocking)
-3. **Deploy-readiness Job** — Validates Streamlit apps pass tests
+3. **Streamlit Smoke Job** — Boots each Streamlit app headlessly (AppTest) and asserts no exceptions/errors are raised
+4. **Deploy-readiness Job** — Validates Streamlit apps pass tests
 
 ### Streamlit Cloud Deployment
 

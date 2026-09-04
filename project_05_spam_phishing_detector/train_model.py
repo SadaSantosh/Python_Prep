@@ -1,14 +1,16 @@
-import pandas as pd
-import numpy as np
+import os
 import re
 import string
 import json
-import joblib
 
+import joblib
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # 1. Synthetic Dataset Creation (SMS/Email Spam & Phishing Messages)
 data = {
@@ -31,13 +33,15 @@ data = {
 df = pd.DataFrame(data)
 df = pd.concat([df] * 15, ignore_index=True)
 
+
 # 2. Text Preprocessing Function
 def clean_text(text):
-    text = text.lower() # Lowercasing
-    text = re.sub(r'http\S+|www\S+|https\S+', 'http_link', text) # Standardize URLs
-    text = re.sub(r'[%s]' % re.escape(string.punctuation), '', text) # Remove Punctuation
-    text = re.sub(r'\d+', '', text) # Remove Numbers
+    text = text.lower()  # Lowercase everything
+    text = re.sub(r'http\S+|www\S+|https\S+', 'http_link', text)  # Normalize URLs to one token
+    text = re.sub(r'[%s]' % re.escape(string.punctuation), '', text)  # Strip punctuation
+    text = re.sub(r'\d+', '', text)  # Remove digits
     return text
+
 
 df['cleaned_text'] = df['text'].apply(clean_text)
 
@@ -58,15 +62,15 @@ y_pred = model.predict(X_test)
 print(f"✅ Model Accuracy: {accuracy_score(y_test, y_pred) * 100:.2f}%")
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
-# 7. Save Artifacts
-joblib.dump(model, 'spam_model.pkl')
-joblib.dump(tfidf, 'tfidf_vectorizer.pkl')
+# 7. Save Artifacts (paths anchored to this file so it runs from any directory)
+joblib.dump(model, os.path.join(BASE_DIR, "spam_model.pkl"))
+joblib.dump(tfidf, os.path.join(BASE_DIR, "tfidf_vectorizer.pkl"))
 
 metrics = {
     "accuracy": float(accuracy_score(y_test, y_pred)),
     "vocab_size": len(tfidf.vocabulary_),
 }
-with open("model_metrics.json", "w", encoding="utf-8") as f:
+with open(os.path.join(BASE_DIR, "model_metrics.json"), "w", encoding="utf-8") as f:
     json.dump(metrics, f, indent=2)
 
 print("\n💾 Model, vectorizer, and metrics saved successfully!")

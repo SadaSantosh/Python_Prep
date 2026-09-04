@@ -16,86 +16,197 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-MINIMAL_CSS = """
+NEUMORPHIC_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    .stApp {
-        background-color: #fafafa;
-        font-family: 'Inter', sans-serif;
+    :root {
+        --neu-bg: #e0e0e0;
+        --neu-soft: #eaeaea;
+        --neu-panel: #e6e6e6;
+        --neu-light: #ffffff;
+        --neu-shadow: #c0c0c0;
+        --neu-text: #2b2b2b;
+        --neu-muted: #565656;
+        --neu-radius: 15px;
     }
-    .stApp::before {
-        content: '';
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: url('https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1920&q=80') center/cover no-repeat;
-        opacity: 0.05;
-        pointer-events: none;
-        z-index: 0;
-    }
-    .stApp > * { position: relative; z-index: 1; }
 
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
+        background-color: var(--neu-bg) !important;
+        color: var(--neu-text);
+        font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+    }
+    [data-testid="stHeader"] { background: transparent !important; }
+    .block-container { padding-top: 2.4rem; padding-bottom: 3rem; max-width: 1180px; }
+
+    h1, h2, h3, h4 {
+        color: var(--neu-text) !important;
+        font-weight: 650 !important;
+        letter-spacing: -0.02em !important;
+    }
+    [data-testid="stWidgetLabel"] p {
+        color: var(--neu-muted) !important;
+        font-weight: 500 !important;
+        font-size: 0.92rem !important;
+    }
+    .stCaption, [data-testid="stCaptionContainer"] p { color: #6a6a6a !important; }
+
+    /* ---------- Sidebar ---------- */
     [data-testid="stSidebar"] {
-        background: #ffffff !important;
-        border-right: 1px solid #e5e7eb !important;
+        background-color: var(--neu-bg) !important;
+        border-right: none !important;
     }
-    [data-testid="stSidebar"] [data-testid="stMarkdown"] {
-        color: #111827 !important;
-    }
+    [data-testid="stSidebarContent"] { padding: 0.6rem 0.5rem 2rem 0.5rem; }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 { color: var(--neu-text) !important; }
 
-    h1, h2, h3 {
-        color: #111827 !important;
-        font-weight: 600 !important;
-        letter-spacing: -0.025em !important;
-    }
-    p, label, .stMarkdown { color: #374151 !important; }
-
+    /* ---------- Metric cards ---------- */
     div[data-testid="stMetric"] {
-        background: #ffffff !important;
-        border: 1px solid #e5e7eb !important;
-        border-radius: 12px !important;
-        padding: 20px 24px !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
-    }
-
-    .stButton > button {
-        background: #111827 !important;
-        color: #ffffff !important;
+        background: linear-gradient(145deg, var(--neu-soft), #d6d6d6) !important;
         border: none !important;
-        border-radius: 8px !important;
-        font-weight: 500 !important;
-        padding: 10px 24px !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 1.1rem 1.3rem !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
     }
-    .stButton > button:hover {
-        background: #1f2937 !important;
+    div[data-testid="stMetric"] [data-testid="stMetricLabel"] p {
+        color: var(--neu-muted) !important;
+        font-weight: 600 !important;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] p {
+        color: var(--neu-text) !important;
+        font-weight: 700 !important;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricDelta"] p { font-weight: 600 !important; }
+
+    /* ---------- Buttons (raised / extruded) ---------- */
+    [data-testid="stButton"] > button,
+    [data-testid="stDownloadButton"] > button,
+    [data-testid="stFormSubmitButton"] > button {
+        background: linear-gradient(145deg, var(--neu-soft), #d4d4d4) !important;
+        color: var(--neu-text) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        font-weight: 600 !important;
+        box-shadow: 7px 7px 14px var(--neu-shadow), -7px -7px 14px var(--neu-light) !important;
+        transition: box-shadow 0.18s ease !important;
+    }
+    [data-testid="stButton"] > button:hover,
+    [data-testid="stDownloadButton"] > button:hover,
+    [data-testid="stFormSubmitButton"] > button:hover {
+        box-shadow: 5px 5px 10px var(--neu-shadow), -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stButton"] > button:active,
+    [data-testid="stDownloadButton"] > button:active,
+    [data-testid="stFormSubmitButton"] > button:active {
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
     }
 
-    [data-baseweb="tab-list"] {
-        background: #f3f4f6 !important;
-        border-radius: 10px !important;
-        padding: 4px !important;
-        border: 1px solid #e5e7eb !important;
-    }
-    [data-baseweb="tab"] {
-        border-radius: 8px !important;
-        font-weight: 500 !important;
-    }
-    [aria-selected="true"] {
-        background: #ffffff !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
-    }
-
-    .stDataFrame {
-        border-radius: 10px !important;
+    /* ---------- Inputs (inset / pressed) ---------- */
+    [data-testid="stNumberInputContainer"],
+    [data-testid="stTextAreaRootElement"],
+    [data-testid="stTextInputRootElement"],
+    [data-testid="stDateInput"] [role="group"] {
+        background-color: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
         overflow: hidden !important;
-        border: 1px solid #e5e7eb !important;
+    }
+    [data-testid="stTextInput"] input,
+    [data-testid="stTextArea"] textarea,
+    [data-testid="stNumberInput"] input,
+    [data-testid="stDateInput"] input {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: var(--neu-text) !important;
+    }
+    [data-testid="stNumberInputStepDown"],
+    [data-testid="stNumberInputStepUp"] { background: transparent !important; color: var(--neu-muted) !important; }
+
+    /* Select (react-aria combobox) */
+    [data-testid="stSelectbox"] [role="group"] {
+        background-color: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stSelectbox"] input {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: var(--neu-text) !important;
+    }
+    [data-testid="stSelectbox"] button {
+        background: transparent !important;
+        border: none !important;
+        color: var(--neu-muted) !important;
     }
 
-    .block-container { padding-top: 2rem; max-width: 1100px; }
+    [data-testid="stCheckbox"] label { color: var(--neu-text) !important; }
+
+    /* ---------- Tabs ---------- */
+    [data-testid="stTabs"] [role="tablist"] {
+        background: #d3d3d3 !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 0.35rem !important;
+        box-shadow: inset 3px 3px 7px #bebebe, inset -3px -3px 7px #f2f2f2 !important;
+        gap: 0.35rem !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"] {
+        border-radius: var(--neu-radius) !important;
+        color: var(--neu-muted) !important;
+        font-weight: 500 !important;
+        transition: all 0.18s ease !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] {
+        background: linear-gradient(145deg, #ededed, #d5d5d5) !important;
+        color: var(--neu-text) !important;
+        font-weight: 600 !important;
+        box-shadow: 5px 5px 10px var(--neu-shadow), -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"] .react-aria-SelectionIndicator { display: none !important; }
+
+    /* ---------- Surfaces: uploader / dataframe / charts / alerts / expanders ---------- */
+    [data-testid="stFileUploaderDropzone"] {
+        background-color: var(--neu-panel) !important;
+        border: 1px dashed #aaaaaa !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 4px 4px 8px var(--neu-shadow), inset -4px -4px 8px var(--neu-light) !important;
+        color: var(--neu-muted) !important;
+    }
+    [data-testid="stDataFrame"] {
+        background: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        overflow: hidden !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
+    }
+    [data-testid="stPlotlyChart"] {
+        background: var(--neu-panel) !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 0.4rem 0.6rem !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
+    }
+    [data-testid="stAlert"] {
+        border-radius: var(--neu-radius) !important;
+        box-shadow: 6px 6px 12px rgba(150, 150, 150, 0.35), -6px -6px 12px var(--neu-light) !important;
+    }
+    [data-testid="stExpander"] {
+        background: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        overflow: hidden !important;
+        box-shadow: 6px 6px 12px var(--neu-shadow), -6px -6px 12px var(--neu-light) !important;
+    }
+    [data-testid="stExpander"] summary { color: var(--neu-text) !important; font-weight: 600 !important; }
+
+    hr { border-color: rgba(90, 90, 90, 0.25) !important; }
 </style>
 """
-st.markdown(MINIMAL_CSS, unsafe_allow_html=True)
+st.markdown(NEUMORPHIC_CSS, unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -155,7 +266,13 @@ with st.sidebar:
     st.write(f"Accuracy: {metrics['accuracy'] * 100:.1f}%")
     st.write(f"Vocabulary: {metrics['vocab_size']:,} terms")
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Scanner", "Batch Audit", "Metrics", "Email Header Analyzer", "Threat Intelligence"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "Scanner",
+    "Batch Audit",
+    "Metrics",
+    "Email Header Analyzer",
+    "Threat Intelligence",
+])
 
 with tab1:
     user_input = st.text_area(
@@ -164,7 +281,7 @@ with tab1:
         placeholder="Paste email or SMS content here...",
     )
 
-    if st.button("Analyze message", use_container_width=True):
+    if st.button("Analyze message", width="stretch"):
         if not user_input.strip():
             st.warning("Enter text before scanning.")
         else:
@@ -204,7 +321,7 @@ with tab2:
             batch_df["Spam_Probability_%"] = model.predict_proba(vec_batch)[:, spam_idx] * 100
 
             st.subheader("Preview")
-            st.dataframe(batch_df.head(10), use_container_width=True)
+            st.dataframe(batch_df.head(10), width="stretch")
 
             c1, c2, c3 = st.columns(3)
             c1.metric("Scanned", len(batch_df))
@@ -215,7 +332,7 @@ with tab2:
                 "Download report",
                 data=batch_df.to_csv(index=False).encode("utf-8"),
                 file_name="phishshield_report.csv",
-                use_container_width=True,
+                width="stretch",
             )
         else:
             st.error("CSV must include a `text` column.")
@@ -248,7 +365,7 @@ with tab4:
         key="header_input",
     )
 
-    if st.button("Analyze headers", use_container_width=True, key="analyze_headers"):
+    if st.button("Analyze headers", width="stretch", key="analyze_headers"):
         if not header_input.strip():
             st.warning("Paste email headers first.")
         else:
@@ -278,7 +395,9 @@ with tab4:
                 auth_found = False
                 for field in auth_fields:
                     if field in headers:
-                        st.write(f"- **{field.title()}:** {headers[field][:100]}{'...' if len(headers[field]) > 100 else ''}")
+                        snippet = headers[field][:100]
+                        suffix = "..." if len(headers[field]) > 100 else ""
+                        st.write(f"- **{field.title()}:** {snippet}{suffix}")
                         auth_found = True
                 if not auth_found:
                     st.info("No standard authentication headers found.")
@@ -310,7 +429,10 @@ with tab5:
     st.write("Overview of common threat patterns detected in the training corpus.")
 
     threat_data = pd.DataFrame({
-        "Threat Category": ["Credential Phishing", "Prize/Scam", "Banking Fraud", "Package Delivery", "Account Suspension", "Tech Support Scam"],
+        "Threat Category": [
+            "Credential Phishing", "Prize/Scam", "Banking Fraud",
+            "Package Delivery", "Account Suspension", "Tech Support Scam",
+        ],
         "Prevalence": [35, 25, 15, 10, 10, 5],
         "Avg Confidence": [87, 92, 78, 85, 90, 75],
     })
@@ -326,7 +448,7 @@ with tab5:
             font_color="#374151", margin=dict(l=0, r=0, t=20, b=0),
             showlegend=False,
         )
-        st.plotly_chart(fig_threat, use_container_width=True)
+        st.plotly_chart(fig_threat, width="stretch")
 
     with t2:
         fig_conf = px.bar(
@@ -338,15 +460,18 @@ with tab5:
             font_color="#374151", margin=dict(l=0, r=0, t=20, b=0),
             showlegend=False,
         )
-        st.plotly_chart(fig_conf, use_container_width=True)
+        st.plotly_chart(fig_conf, width="stretch")
 
     st.write("**Detection Rules Active**")
     rules = pd.DataFrame({
-        "Rule": ["URL TLD Filtering", "IP-Based Hostname Detection", "Long URL Detection", "Email @ Override Check", "TF-IDF Spam Keywords", "Punctuation Pattern Analysis"],
+        "Rule": [
+            "URL TLD Filtering", "IP-Based Hostname Detection", "Long URL Detection",
+            "Email @ Override Check", "TF-IDF Spam Keywords", "Punctuation Pattern Analysis",
+        ],
         "Type": ["Heuristic", "Heuristic", "Heuristic", "Heuristic", "ML", "ML"],
         "Status": ["Active"] * 6,
     })
-    st.dataframe(rules, use_container_width=True, hide_index=True)
+    st.dataframe(rules, width="stretch", hide_index=True)
 
     c1, c2, c3 = st.columns(3)
     c1.metric("Total Rules", "6")

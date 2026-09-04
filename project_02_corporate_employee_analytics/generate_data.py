@@ -1,41 +1,47 @@
-import pandas as pd
+"""Generate the synthetic employee attrition dataset used by the HR analytics pipeline."""
+
+import os
+
 import numpy as np
+import pandas as pd
 
-# Set seed for reproducibility
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_PATH = os.path.join(BASE_DIR, "employee_data.csv")
+
+# Deterministic seed keeps regenerated datasets comparable
 np.random.seed(42)
-n_rows = 1200
+N_ROWS = 1200
 
-# Continuous choices and probabilities verified to match perfectly
+# Age and experience draws include NaNs to give the cleaning step realistic gaps
 age_choices = [22, 25, 30, 35, 40, 45, 50, np.nan]
-age_probs   = [0.1, 0.2, 0.2, 0.15, 0.1, 0.1, 0.1, 0.05]
+age_probs = [0.1, 0.2, 0.2, 0.15, 0.1, 0.1, 0.1, 0.05]
 
 exp_choices = [1, 2, 3, 5, 7, 10, 15, np.nan]
-exp_probs   = [0.15, 0.2, 0.2, 0.15, 0.1, 0.1, 0.05, 0.05]
+exp_probs = [0.15, 0.2, 0.2, 0.15, 0.1, 0.1, 0.05, 0.05]
 
 data = {
-    "Employee_ID": [f"EMP_{i:04d}" for i in range(1, n_rows + 1)],
-    "Age": np.random.choice(age_choices, size=n_rows, p=age_probs),
-    "Department": np.random.choice(["IT", "HR", "Sales", "Marketing"], size=n_rows),
-    "Years_Experience": np.random.choice(exp_choices, size=n_rows, p=exp_probs),
-    "Salary": np.random.randint(40000, 120000, size=n_rows),
-    "Remote_Worker": np.random.choice(["Yes", "No"], size=n_rows),
-    "Performance_Score": np.random.choice(["Low", "Medium", "High"], size=n_rows),
+    "Employee_ID": [f"EMP_{i:04d}" for i in range(1, N_ROWS + 1)],
+    "Age": np.random.choice(age_choices, size=N_ROWS, p=age_probs),
+    "Department": np.random.choice(["IT", "HR", "Sales", "Marketing"], size=N_ROWS),
+    "Years_Experience": np.random.choice(exp_choices, size=N_ROWS, p=exp_probs),
+    "Salary": np.random.randint(40000, 120000, size=N_ROWS),
+    "Remote_Worker": np.random.choice(["Yes", "No"], size=N_ROWS),
+    "Performance_Score": np.random.choice(["Low", "Medium", "High"], size=N_ROWS),
 }
 
 df = pd.DataFrame(data)
 
-# Derive attrition from workforce signals (realistic HR pattern)
+# Derive attrition from realistic workforce signals
 attrition_prob = (
     0.10
     + (df["Remote_Worker"] == "No").astype(float) * 0.06
     + (df["Salary"] < 50000).astype(float) * 0.14
     + (df["Years_Experience"].fillna(0) < 2).astype(float) * 0.08
 )
-df["Attrition"] = np.where(np.random.rand(n_rows) < attrition_prob, "Yes", "No")
+df["Attrition"] = np.where(np.random.rand(N_ROWS) < attrition_prob, "Yes", "No")
 
-# Duplicate some rows intentionally to make it messy
+# Duplicate a handful of rows to give the cleaning step duplicates to remove
 df = pd.concat([df, df.iloc[:15]], ignore_index=True)
 
-# Save to file system
-df.to_csv("employee_data.csv", index=False)
-print("📦 employee_data.csv generated successfully with 1,215 records!")
+df.to_csv(OUTPUT_PATH, index=False)
+print(f"employee_data.csv generated successfully with {len(df)} records.")

@@ -13,86 +13,197 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-MINIMAL_CSS = """
+NEUMORPHIC_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-    .stApp {
-        background-color: #fafafa;
-        font-family: 'Inter', sans-serif;
+    :root {
+        --neu-bg: #e0e0e0;
+        --neu-soft: #eaeaea;
+        --neu-panel: #e6e6e6;
+        --neu-light: #ffffff;
+        --neu-shadow: #c0c0c0;
+        --neu-text: #2b2b2b;
+        --neu-muted: #565656;
+        --neu-radius: 15px;
     }
-    .stApp::before {
-        content: '';
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80') center/cover no-repeat;
-        opacity: 0.06;
-        pointer-events: none;
-        z-index: 0;
-    }
-    .stApp > * { position: relative; z-index: 1; }
 
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
+        background-color: var(--neu-bg) !important;
+        color: var(--neu-text);
+        font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+    }
+    [data-testid="stHeader"] { background: transparent !important; }
+    .block-container { padding-top: 2.4rem; padding-bottom: 3rem; max-width: 1180px; }
+
+    h1, h2, h3, h4 {
+        color: var(--neu-text) !important;
+        font-weight: 650 !important;
+        letter-spacing: -0.02em !important;
+    }
+    [data-testid="stWidgetLabel"] p {
+        color: var(--neu-muted) !important;
+        font-weight: 500 !important;
+        font-size: 0.92rem !important;
+    }
+    .stCaption, [data-testid="stCaptionContainer"] p { color: #6a6a6a !important; }
+
+    /* ---------- Sidebar ---------- */
     [data-testid="stSidebar"] {
-        background: #ffffff !important;
-        border-right: 1px solid #e5e7eb !important;
+        background-color: var(--neu-bg) !important;
+        border-right: none !important;
     }
-    [data-testid="stSidebar"] [data-testid="stMarkdown"] {
-        color: #111827 !important;
-    }
+    [data-testid="stSidebarContent"] { padding: 0.6rem 0.5rem 2rem 0.5rem; }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 { color: var(--neu-text) !important; }
 
-    h1, h2, h3 {
-        color: #111827 !important;
-        font-weight: 600 !important;
-        letter-spacing: -0.025em !important;
-    }
-    p, label, .stMarkdown { color: #374151 !important; }
-
+    /* ---------- Metric cards ---------- */
     div[data-testid="stMetric"] {
-        background: #ffffff !important;
-        border: 1px solid #e5e7eb !important;
-        border-radius: 12px !important;
-        padding: 20px 24px !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
-    }
-
-    .stButton > button {
-        background: #111827 !important;
-        color: #ffffff !important;
+        background: linear-gradient(145deg, var(--neu-soft), #d6d6d6) !important;
         border: none !important;
-        border-radius: 8px !important;
-        font-weight: 500 !important;
-        padding: 10px 24px !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 1.1rem 1.3rem !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
     }
-    .stButton > button:hover {
-        background: #1f2937 !important;
+    div[data-testid="stMetric"] [data-testid="stMetricLabel"] p {
+        color: var(--neu-muted) !important;
+        font-weight: 600 !important;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] p {
+        color: var(--neu-text) !important;
+        font-weight: 700 !important;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricDelta"] p { font-weight: 600 !important; }
+
+    /* ---------- Buttons (raised / extruded) ---------- */
+    [data-testid="stButton"] > button,
+    [data-testid="stDownloadButton"] > button,
+    [data-testid="stFormSubmitButton"] > button {
+        background: linear-gradient(145deg, var(--neu-soft), #d4d4d4) !important;
+        color: var(--neu-text) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        font-weight: 600 !important;
+        box-shadow: 7px 7px 14px var(--neu-shadow), -7px -7px 14px var(--neu-light) !important;
+        transition: box-shadow 0.18s ease !important;
+    }
+    [data-testid="stButton"] > button:hover,
+    [data-testid="stDownloadButton"] > button:hover,
+    [data-testid="stFormSubmitButton"] > button:hover {
+        box-shadow: 5px 5px 10px var(--neu-shadow), -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stButton"] > button:active,
+    [data-testid="stDownloadButton"] > button:active,
+    [data-testid="stFormSubmitButton"] > button:active {
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
     }
 
-    [data-baseweb="tab-list"] {
-        background: #f3f4f6 !important;
-        border-radius: 10px !important;
-        padding: 4px !important;
-        border: 1px solid #e5e7eb !important;
-    }
-    [data-baseweb="tab"] {
-        border-radius: 8px !important;
-        font-weight: 500 !important;
-    }
-    [aria-selected="true"] {
-        background: #ffffff !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
-    }
-
-    .stDataFrame {
-        border-radius: 10px !important;
+    /* ---------- Inputs (inset / pressed) ---------- */
+    [data-testid="stNumberInputContainer"],
+    [data-testid="stTextAreaRootElement"],
+    [data-testid="stTextInputRootElement"],
+    [data-testid="stDateInput"] [role="group"] {
+        background-color: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
         overflow: hidden !important;
-        border: 1px solid #e5e7eb !important;
+    }
+    [data-testid="stTextInput"] input,
+    [data-testid="stTextArea"] textarea,
+    [data-testid="stNumberInput"] input,
+    [data-testid="stDateInput"] input {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: var(--neu-text) !important;
+    }
+    [data-testid="stNumberInputStepDown"],
+    [data-testid="stNumberInputStepUp"] { background: transparent !important; color: var(--neu-muted) !important; }
+
+    /* Select (react-aria combobox) */
+    [data-testid="stSelectbox"] [role="group"] {
+        background-color: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 5px 5px 10px var(--neu-shadow), inset -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stSelectbox"] input {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: var(--neu-text) !important;
+    }
+    [data-testid="stSelectbox"] button {
+        background: transparent !important;
+        border: none !important;
+        color: var(--neu-muted) !important;
     }
 
-    .block-container { padding-top: 2rem; max-width: 1100px; }
+    [data-testid="stCheckbox"] label { color: var(--neu-text) !important; }
+
+    /* ---------- Tabs ---------- */
+    [data-testid="stTabs"] [role="tablist"] {
+        background: #d3d3d3 !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 0.35rem !important;
+        box-shadow: inset 3px 3px 7px #bebebe, inset -3px -3px 7px #f2f2f2 !important;
+        gap: 0.35rem !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"] {
+        border-radius: var(--neu-radius) !important;
+        color: var(--neu-muted) !important;
+        font-weight: 500 !important;
+        transition: all 0.18s ease !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] {
+        background: linear-gradient(145deg, #ededed, #d5d5d5) !important;
+        color: var(--neu-text) !important;
+        font-weight: 600 !important;
+        box-shadow: 5px 5px 10px var(--neu-shadow), -5px -5px 10px var(--neu-light) !important;
+    }
+    [data-testid="stTabs"] [data-testid="stTab"] .react-aria-SelectionIndicator { display: none !important; }
+
+    /* ---------- Surfaces: uploader / dataframe / charts / alerts / expanders ---------- */
+    [data-testid="stFileUploaderDropzone"] {
+        background-color: var(--neu-panel) !important;
+        border: 1px dashed #aaaaaa !important;
+        border-radius: var(--neu-radius) !important;
+        box-shadow: inset 4px 4px 8px var(--neu-shadow), inset -4px -4px 8px var(--neu-light) !important;
+        color: var(--neu-muted) !important;
+    }
+    [data-testid="stDataFrame"] {
+        background: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        overflow: hidden !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
+    }
+    [data-testid="stPlotlyChart"] {
+        background: var(--neu-panel) !important;
+        border-radius: var(--neu-radius) !important;
+        padding: 0.4rem 0.6rem !important;
+        box-shadow: 8px 8px 16px var(--neu-shadow), -8px -8px 16px var(--neu-light) !important;
+    }
+    [data-testid="stAlert"] {
+        border-radius: var(--neu-radius) !important;
+        box-shadow: 6px 6px 12px rgba(150, 150, 150, 0.35), -6px -6px 12px var(--neu-light) !important;
+    }
+    [data-testid="stExpander"] {
+        background: var(--neu-panel) !important;
+        border: none !important;
+        border-radius: var(--neu-radius) !important;
+        overflow: hidden !important;
+        box-shadow: 6px 6px 12px var(--neu-shadow), -6px -6px 12px var(--neu-light) !important;
+    }
+    [data-testid="stExpander"] summary { color: var(--neu-text) !important; font-weight: 600 !important; }
+
+    hr { border-color: rgba(90, 90, 90, 0.25) !important; }
 </style>
 """
-st.markdown(MINIMAL_CSS, unsafe_allow_html=True)
+st.markdown(NEUMORPHIC_CSS, unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -192,11 +303,18 @@ with tab1:
     partner = st.sidebar.selectbox("Partner", ["Yes", "No"])
     dependents = st.sidebar.selectbox("Dependents", ["Yes", "No"])
 
-    def build_input_df(m_charges, t_support, c_type):
-        avg_cost = total_charges / max(tenure, 1)
+    def build_input_df(m_charges, t_support, c_type, *, t_v=None, total_v=None, inet_v=None, pay_v=None):
+        """Build one model-ready row. Optional overrides let the What-If Explorer
+        test profiles that differ from the sidebar defaults."""
+        tenure_v = tenure if t_v is None else t_v
+        charges_total = total_charges if total_v is None else total_v
+        internet = internet_service if inet_v is None else inet_v
+        payment = payment_method if pay_v is None else pay_v
+
+        avg_cost = charges_total / max(tenure_v, 1)
         price_diff = m_charges - avg_cost
         num_df = pd.DataFrame(
-            [[tenure, m_charges, total_charges, avg_cost, price_diff]],
+            [[tenure_v, m_charges, charges_total, avg_cost, price_diff]],
             columns=["tenure", "MonthlyCharges", "TotalCharges", "Avg_Monthly_Cost", "Monthly_Price_Diff"],
         )
         scaled_num = scaler.transform(num_df)[0]
@@ -213,10 +331,10 @@ with tab1:
 
         if f"Contract_{c_type}" in data:
             data[f"Contract_{c_type}"] = 1
-        if f"InternetService_{internet_service}" in data:
-            data[f"InternetService_{internet_service}"] = 1
-        if f"PaymentMethod_{payment_method}" in data:
-            data[f"PaymentMethod_{payment_method}"] = 1
+        if f"InternetService_{internet}" in data:
+            data[f"InternetService_{internet}"] = 1
+        if f"PaymentMethod_{payment}" in data:
+            data[f"PaymentMethod_{payment}"] = 1
         if f"TechSupport_{t_support}" in data:
             data[f"TechSupport_{t_support}"] = 1
         if f"OnlineSecurity_{online_security}" in data:
@@ -225,7 +343,7 @@ with tab1:
 
     st.subheader("Risk Assessment")
 
-    if st.button("Calculate churn risk", use_container_width=True):
+    if st.button("Calculate churn risk", width="stretch"):
         input_df = build_input_df(monthly_charges, tech_support, contract)
         churn_prob = model.predict_proba(input_df)[0][1] * 100
         ltv_at_risk = monthly_charges * 12
@@ -272,7 +390,8 @@ with tab2:
     with col_sim1:
         discount = st.slider("Monthly discount ($)", 0, int(monthly_charges), 10)
         upgrade_support = st.checkbox("Add free tech support", value=True)
-        switch_contract = st.selectbox("Contract upgrade", [contract, "One year", "Two year"])
+        upgrade_options = [contract] + [c for c in ["One year", "Two year", "Month-to-month"] if c != contract]
+        switch_contract = st.selectbox("Contract upgrade", upgrade_options)
 
     new_monthly = max(18.0, monthly_charges - discount)
     new_support = "Yes" if upgrade_support else tech_support
@@ -282,11 +401,15 @@ with tab2:
 
     base_score = model.predict_proba(base_df)[0][1] * 100
     sim_score = model.predict_proba(sim_df)[0][1] * 100
-    risk_reduction = base_score - sim_score
 
     with col_sim2:
         st.metric("Current churn score", f"{base_score:.1f}%")
-        st.metric("Simulated score", f"{sim_score:.1f}%", delta=f"-{risk_reduction:.1f}%")
+        st.metric(
+            "Simulated score",
+            f"{sim_score:.1f}%",
+            delta=f"{sim_score - base_score:+.1f}%",
+            delta_color="inverse",
+        )
         if sim_score < 50.0:
             st.success("Offer brings customer into the safe zone.")
         else:
@@ -300,7 +423,7 @@ with tab3:
     if uploaded_file is not None:
         raw_batch = pd.read_csv(uploaded_file)
 
-        if st.button("Run batch scoring", use_container_width=True):
+        if st.button("Run batch scoring", width="stretch"):
             if set(feature_cols).issubset(raw_batch.columns):
                 batch_features = raw_batch[feature_cols]
             elif {"tenure", "MonthlyCharges", "TotalCharges"}.issubset(raw_batch.columns):
@@ -322,13 +445,13 @@ with tab3:
                 c2.metric("High risk accounts", len(high_risk))
                 c3.metric("Annual revenue at risk", f"${annual_risk:,.2f}")
 
-            st.dataframe(result_df.head(20), use_container_width=True)
+            st.dataframe(result_df.head(20), width="stretch")
             st.download_button(
                 "Download results",
                 data=result_df.to_csv(index=False).encode("utf-8"),
                 file_name="churn_batch_results.csv",
                 mime="text/csv",
-                use_container_width=True,
+                width="stretch",
             )
 
 with tab4:
@@ -369,7 +492,7 @@ with tab5:
                     churn_rate = subset["Churn"].mean() * 100
                     contract_data.append({"Contract": label, "Count": len(subset), "Churn Rate %": churn_rate})
             if contract_data:
-                st.dataframe(pd.DataFrame(contract_data), use_container_width=True)
+                st.dataframe(pd.DataFrame(contract_data), width="stretch")
 
     with seg2:
         st.write("**Churn by Internet Service**")
@@ -383,11 +506,11 @@ with tab5:
                     churn_rate = subset["Churn"].mean() * 100
                     inet_data.append({"Service": label, "Count": len(subset), "Churn Rate %": churn_rate})
             if inet_data:
-                st.dataframe(pd.DataFrame(inet_data), use_container_width=True)
+                st.dataframe(pd.DataFrame(inet_data), width="stretch")
 
     st.write("**Monthly Charges Distribution by Churn Status**")
     churn_groups = seg_df.groupby("Churn_Label")["MonthlyCharges"].agg(["mean", "median", "count"])
-    st.dataframe(churn_groups.round(2), use_container_width=True)
+    st.dataframe(churn_groups.round(2), width="stretch")
 
     avg_churner = seg_df[seg_df["Churn"] == 1]["MonthlyCharges"].mean()
     avg_stayer = seg_df[seg_df["Churn"] == 0]["MonthlyCharges"].mean()
@@ -405,15 +528,28 @@ with tab6:
     with wif1:
         w_tenure = st.slider("What-If: Tenure (months)", 1, 72, 12, key="wif_tenure")
         w_monthly = st.slider("What-If: Monthly charges ($)", 18.0, 120.0, 70.0, key="wif_monthly")
-        w_contract_wif = st.selectbox("What-If: Contract", ["Month-to-month", "One year", "Two year"], key="wif_contract")
+        w_contract_wif = st.selectbox(
+            "What-If: Contract", ["Month-to-month", "One year", "Two year"], key="wif_contract"
+        )
     with wif2:
         w_internet_wif = st.selectbox("What-If: Internet", ["DSL", "Fiber optic", "No"], key="wif_internet")
         w_support_wif = st.selectbox("What-If: Tech Support", ["Yes", "No", "No internet service"], key="wif_support")
-        w_payment_wif = st.selectbox("What-If: Payment", ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"], key="wif_payment")
+        w_payment_wif = st.selectbox(
+            "What-If: Payment",
+            ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"],
+            key="wif_payment",
+        )
 
-    if st.button("Run What-If analysis", use_container_width=True):
-        w_total = w_tenure * w_monthly
-        wif_df = build_input_df(w_monthly, w_support_wif, w_contract_wif)
+    if st.button("Run What-If analysis", width="stretch"):
+        wif_df = build_input_df(
+            w_monthly,
+            w_support_wif,
+            w_contract_wif,
+            t_v=w_tenure,
+            total_v=w_tenure * w_monthly,
+            inet_v=w_internet_wif,
+            pay_v=w_payment_wif,
+        )
         wif_prob = model.predict_proba(wif_df)[0][1] * 100
 
         col_a, col_b = st.columns(2)

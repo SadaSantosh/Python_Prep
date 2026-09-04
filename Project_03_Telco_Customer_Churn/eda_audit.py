@@ -1,8 +1,8 @@
+import os
+
 import pandas as pd
 
 print("🔍 DAY 11: Auditing Telco Dataset for Imbalance & Data Types...")
-
-import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 df = pd.read_csv(os.path.join(BASE_DIR, "telco_churn.csv"))
