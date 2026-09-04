@@ -83,6 +83,7 @@ Python_Prep/
 ├── 📁 project_05_spam_phishing_detector/           # Streamlit NLP detector
 ├── 📁 tests/                                       # 38 pytest tests (unit + app smoke)
 ├── 📁 .github/workflows/                           # CI/CD pipeline
+├── 📄 CHANGELOG.md                                 # Release history
 ├── 📄 CONTRIBUTING.md                              # Development guide
 └── 📄 requirements.txt                             # Global dependencies
 ```
